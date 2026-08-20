@@ -67,34 +67,22 @@ markdown
 Ma trận thể hiện mức độ **quyền lực/ảnh hưởng (Power)** và **mức độ quan tâm (Interest)** của từng stakeholder đối với dự án, giúp BA xác định ưu tiên giao tiếp:
 
 ```mermaid
-flowchart TB
-    subgraph HP["High Power"]
-        direction LR
-        subgraph Q2["Giữ hài lòng (High Power - Low Interest)"]
-            NVVH["Nhân viên vận hành"]
-            BM["Bộ phận bảo mật/Kiểm toán"]
-        end
-        subgraph Q1["Quản lý chặt chẽ (High Power - High Interest)"]
-            BLD["Ban lãnh đạo"]
-            BA["Business Analyst"]
-        end
-    end
-    subgraph LP["Low Power"]
-        direction LR
-        subgraph Q3["Giám sát tối thiểu (Low Power - Low Interest)"]
-            NCC["Nhà cung cấp thanh toán"]
-        end
-        subgraph Q4["Giữ thông tin đầy đủ (Low Power - High Interest)"]
-            KH["Khách hàng"]
-            TX["Tài xế"]
-            DPT["Đội phát triển"]
-        end
-    end
-
-    style Q1 fill:#ffcccc,stroke:#333
-    style Q2 fill:#ffe0b3,stroke:#333
-    style Q3 fill:#e6e6e6,stroke:#333
-    style Q4 fill:#cce5ff,stroke:#333
+quadrantChart
+    title Stakeholder Matrix - CAB System
+    x-axis Low Interest --> High Interest
+    y-axis Low Power --> High Power
+    quadrant-1 Quản lý chặt chẽ
+    quadrant-2 Giữ hài lòng
+    quadrant-3 Giám sát tối thiểu
+    quadrant-4 Giữ thông tin đầy đủ
+    Ban lanh dao: [0.85, 0.9]
+    Khach hang: [0.9, 0.4]
+    Tai xe: [0.75, 0.35]
+    Nhan vien van hanh: [0.6, 0.7]
+    BA: [0.9, 0.65]
+    Doi phat trien: [0.7, 0.55]
+    Nha cung cap thanh toan: [0.3, 0.6]
+    Bao mat Kiem toan: [0.4, 0.75]
 ```
 
 **Diễn giải 4 nhóm trong ma trận:**
