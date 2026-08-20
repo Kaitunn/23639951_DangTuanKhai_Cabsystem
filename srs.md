@@ -1514,6 +1514,194 @@ Sau khi vẽ sơ đồ, BA đặc tả chi tiết từng Use Case: điều kiệ
 | System (nền) | UC26–UC30 | BN04, BN10, BN12–BN14, BN25 |
 
 
+#### Bước 13: Xác định Tiêu chí chấp nhận (Acceptance Criteria - AC)
+
+Acceptance Criteria là tập hợp các điều kiện và nguyên tắc cụ thể mà một tính năng phải đáp ứng, giúp đội phát triển và khách hàng xác định rõ **khi nào một Business Requirement được coi là hoàn thành và có thể nghiệm thu**. Mỗi AC được viết theo cấu trúc **Given – When – Then** và gắn với mã BN/UC tương ứng.
+
+##### 13.1 Nhóm Tài khoản & Hồ sơ (BN01, BN02)
+
+**AC01** — Đăng ký tài khoản thành công (liên quan UC01)
+- Given: Khách hàng chưa có tài khoản trên hệ thống
+- When: Khách hàng nhập số điện thoại/email chưa từng đăng ký và mật khẩu hợp lệ, sau đó gửi form đăng ký
+- Then: Hệ thống tạo tài khoản mới thành công và cho phép đăng nhập
+
+**AC02** — Từ chối đăng ký trùng thông tin (liên quan UC01, EX01)
+- Given: Số điện thoại/email đã tồn tại trên hệ thống
+- When: Người dùng cố đăng ký lại với thông tin đó
+- Then: Hệ thống từ chối, hiển thị thông báo "tài khoản đã tồn tại" và gợi ý đăng nhập
+
+**AC03** — Đăng nhập thành công (liên quan UC02, UC11)
+- Given: Tài khoản đã tồn tại và ở trạng thái active
+- When: Người dùng nhập đúng thông tin đăng nhập
+- Then: Hệ thống cấp phiên đăng nhập và cho phép truy cập các chức năng tương ứng với vai trò
+
+**AC04** — Chặn chuyển trạng thái sẵn sàng khi hồ sơ chưa đầy đủ (liên quan UC12, UC13, BR02, EX02)
+- Given: Tài xế chưa khai báo đầy đủ thông tin phương tiện
+- When: Tài xế cố chuyển trạng thái sang "sẵn sàng nhận chuyến"
+- Then: Hệ thống chặn thao tác và yêu cầu bổ sung thông tin còn thiếu
+
+##### 13.2 Nhóm Đặt xe & Tìm tài xế (BN03–BN06)
+
+**AC05** — Tạo yêu cầu đặt xe thành công (liên quan UC04)
+- Given: Khách hàng đã đăng nhập
+- When: Khách hàng nhập đầy đủ điểm đón, điểm đến, chọn loại xe và gửi yêu cầu
+- Then: Hệ thống tạo bản ghi Trip với trạng thái "searching" và bắt đầu tìm tài xế
+
+**AC06** — Chỉ đề xuất tài xế đang sẵn sàng (liên quan UC26, BR03)
+- Given: Có danh sách tài xế trong bán kính tìm kiếm
+- When: Hệ thống lọc tài xế để đề xuất
+- Then: Chỉ những tài xế có trạng thái "sẵn sàng (online)" được đưa vào danh sách đề xuất
+
+**AC07** — Một tài xế không nhận đồng thời 2 chuyến (liên quan UC14, BR04)
+- Given: Tài xế đang thực hiện một chuyến khác (status = on_trip)
+- When: Hệ thống tìm tài xế cho một chuyến mới
+- Then: Tài xế đó không được đưa vào danh sách đề xuất cho chuyến mới
+
+**AC08** — Tự động chuyển tài xế khi từ chối (liên quan UC14, EX05)
+- Given: Tài xế A được mời chuyến và chủ động từ chối
+- When: Hệ thống nhận được phản hồi từ chối
+- Then: Hệ thống ngay lập tức mời tài xế tiếp theo trong danh sách, không chờ hết thời gian giới hạn
+
+**AC09** — Tự động chuyển tài xế khi hết thời gian phản hồi (liên quan UC14, BR05, EX04)
+- Given: Tài xế A được mời chuyến nhưng không phản hồi trong khoảng thời gian quy định
+- When: Thời gian chờ phản hồi kết thúc
+- Then: Hệ thống coi như tài xế A từ chối, loại khỏi danh sách đề xuất cho chuyến này và mời tài xế tiếp theo
+
+**AC10** — Thông báo khi không tìm được tài xế (liên quan UC04, UC26, EX03, EX06)
+- Given: Hệ thống đã mời hết danh sách tài xế phù hợp mà không ai chấp nhận, hoặc không có tài xế nào phù hợp từ đầu
+- When: Điều kiện trên xảy ra
+- Then: Hệ thống dừng tìm kiếm và gửi thông báo rõ ràng cho khách hàng rằng không tìm được tài xế
+
+**AC11** — Chỉ 1 tài xế được xác nhận khi có tranh chấp (liên quan UC14, EX07)
+- Given: Hai tài xế cùng bấm "chấp nhận" một chuyến gần như đồng thời
+- When: Hệ thống xử lý hai yêu cầu chấp nhận
+- Then: Chỉ tài xế có yêu cầu được ghi nhận trước được xác nhận cho chuyến; tài xế còn lại nhận thông báo "chuyến đã có tài xế khác nhận"
+
+##### 13.3 Nhóm Thực hiện chuyến đi (BN07–BN09, BN17)
+
+**AC12** — Cập nhật trạng thái đúng thứ tự (liên quan UC15, BR07)
+- Given: Chuyến đang ở trạng thái "assigned"
+- When: Tài xế cố cập nhật trạng thái không theo đúng thứ tự quy định (vd: nhảy thẳng sang "hoàn thành" khi chưa "đón khách")
+- Then: Hệ thống từ chối cập nhật và yêu cầu thực hiện đúng tuần tự
+
+**AC13** — Khách hàng nhận thông báo khi tài xế đến điểm đón (liên quan UC15, UC09)
+- Given: Tài xế cập nhật trạng thái "đã đến điểm đón"
+- When: Cập nhật được ghi nhận thành công
+- Then: Hệ thống gửi thông báo ngay cho khách hàng
+
+**AC14** — Ghi nhận vị trí tài xế liên tục trong chuyến (liên quan UC05, BN09)
+- Given: Chuyến đang ở trạng thái "đang di chuyển"
+- When: Tài xế di chuyển
+- Then: Hệ thống ghi nhận vị trí tài xế định kỳ và khách hàng thấy được cập nhật trên màn hình theo dõi
+
+**AC15** — Xem lịch sử chuyến đầy đủ (liên quan UC06)
+- Given: Khách hàng có ít nhất một chuyến đã hoàn thành
+- When: Khách hàng mở màn hình lịch sử chuyến đi
+- Then: Hệ thống hiển thị đầy đủ danh sách chuyến với điểm đón, điểm đến, số tiền, tài xế, thời gian
+
+##### 13.4 Nhóm Tính cước & Thanh toán (BN10–BN13)
+
+**AC16** — Chỉ tính cước khi chuyến đã hoàn thành (liên quan UC27, BR09)
+- Given: Chuyến chưa đạt trạng thái "hoàn thành"
+- When: Hệ thống hoặc người dùng cố kích hoạt tính cước
+- Then: Hệ thống không tính cước; chỉ tính cước ngay sau khi Trip.status chuyển thành "completed"
+
+**AC17** — Không lưu thông tin thẻ nhạy cảm (liên quan UC30, BR10)
+- Given: Khách hàng thanh toán bằng phương thức điện tử qua nhà cung cấp bên ngoài
+- When: Giao dịch được xử lý
+- Then: Hệ thống CAB chỉ lưu token/mã tham chiếu giao dịch, không lưu số thẻ hoặc thông tin tài khoản thanh toán gốc
+
+**AC18** — Không thu tiền trùng lặp (liên quan UC07, BR11)
+- Given: Một chuyến đã có giao dịch thanh toán ở trạng thái "success"
+- When: Có yêu cầu thanh toán lại cho cùng chuyến đó
+- Then: Hệ thống từ chối tạo giao dịch mới, chỉ cho phép một giao dịch thành công duy nhất trên mỗi chuyến
+
+**AC19** — Xử lý khi giao dịch điện tử thất bại (liên quan UC30, EX11)
+- Given: Khách hàng chọn thanh toán điện tử
+- When: Giao dịch từ Payment Gateway trả về kết quả thất bại
+- Then: Hệ thống thông báo lỗi cho khách hàng và cho phép thử lại hoặc đổi phương thức thanh toán khác, không trừ tiền
+
+**AC20** — Xử lý khi Payment Gateway không phản hồi (liên quan UC30, EX13)
+- Given: Hệ thống đã gửi yêu cầu thanh toán điện tử
+- When: Payment Gateway không phản hồi trong thời gian timeout quy định
+- Then: Hệ thống hiển thị thông báo lỗi tạm thời cho khách hàng và gợi ý phương thức thanh toán khác (vd: tiền mặt)
+
+##### 13.5 Nhóm Thông báo (BN14, BN15)
+
+**AC21** — Gửi đúng và đủ thông báo theo sự kiện (liên quan UC28)
+- Given: Một sự kiện nghiệp vụ hợp lệ xảy ra (vd: tài xế nhận chuyến)
+- When: Sự kiện được hệ thống ghi nhận
+- Then: Hệ thống gửi đúng một thông báo tương ứng cho đúng người nhận (khách hàng hoặc tài xế), không gửi trùng lặp
+
+**AC22** — Retry khi gửi thông báo thất bại (liên quan UC28, EX14)
+- Given: Việc gửi thông báo lần đầu thất bại (lỗi kênh gửi)
+- When: Hệ thống phát hiện gửi thất bại
+- Then: Hệ thống tự động thử gửi lại theo số lần giới hạn đã cấu hình, không làm gián đoạn luồng nghiệp vụ chính của chuyến đi
+
+##### 13.6 Nhóm Đánh giá tài xế (BN16)
+
+**AC23** — Chỉ được đánh giá sau khi thanh toán thành công (liên quan UC08, BR13)
+- Given: Chuyến chưa hoàn tất thanh toán (Payment.status ≠ success)
+- When: Hệ thống kiểm tra điều kiện hiển thị lời mời đánh giá
+- Then: Hệ thống không hiển thị lời mời đánh giá cho đến khi thanh toán thành công
+
+**AC24** — Mỗi chuyến chỉ đánh giá một lần (liên quan UC08, BR14)
+- Given: Chuyến đã có một Rating được lưu
+- When: Khách hàng cố gửi đánh giá lần thứ hai cho cùng chuyến
+- Then: Hệ thống từ chối, chỉ giữ lại đánh giá đầu tiên
+
+**AC25** — Cập nhật điểm trung bình tài xế sau đánh giá (liên quan UC08)
+- Given: Khách hàng gửi đánh giá hợp lệ (1–5 sao)
+- When: Hệ thống lưu Rating thành công
+- Then: Driver.average_rating được tính lại và cập nhật ngay
+
+##### 13.7 Nhóm Quản trị & Vận hành (BN18–BN21)
+
+**AC26** — Chặn thao tác nhạy cảm với nhân viên không đủ quyền (liên quan UC19, UC20, BR15, EX16)
+- Given: Nhân viên vận hành không có quyền thực hiện thao tác nhạy cảm (vd: xóa dữ liệu giao dịch)
+- When: Nhân viên cố thực hiện thao tác đó
+- Then: Hệ thống từ chối thao tác, hiển thị thông báo không đủ quyền, và ghi log nỗ lực truy cập
+
+**AC27** — Hiển thị đúng danh sách chuyến đang diễn ra (liên quan UC21)
+- Given: Có các chuyến đang ở trạng thái khác "completed"/"cancelled"
+- When: Nhân viên vận hành mở màn hình giám sát
+- Then: Hệ thống hiển thị đầy đủ và chính xác danh sách các chuyến đang diễn ra kèm trạng thái tài xế
+
+**AC28** — Ghi log khi xử lý sự cố (liên quan UC22, BR16)
+- Given: Nhân viên vận hành thực hiện thao tác can thiệp vào một chuyến gặp sự cố
+- When: Thao tác được thực hiện thành công
+- Then: Hệ thống ghi lại đầy đủ vào Audit Log: ai thực hiện, hành động gì, đối tượng nào, thời gian nào
+
+**AC29** — Báo cáo vận hành chính xác theo khoảng thời gian (liên quan UC24)
+- Given: Có dữ liệu chuyến đi trong khoảng thời gian được chọn
+- When: Nhân viên vận hành tạo báo cáo cho khoảng thời gian đó
+- Then: Hệ thống hiển thị đúng số lượng chuyến, doanh thu, tỷ lệ hoàn thành/hủy và hiệu quả tài xế khớp với dữ liệu thực tế trong khoảng thời gian đó
+
+##### 13.8 Nhóm Bảo mật & Dữ liệu (BN22–BN25)
+
+**AC30** — Chặn truy cập khi chưa xác thực (liên quan UC02, BR17, EX18)
+- Given: Người dùng chưa đăng nhập hoặc token đã hết hạn
+- When: Người dùng cố truy cập chức năng yêu cầu tài khoản
+- Then: Hệ thống chặn truy cập và chuyển hướng về màn hình đăng nhập
+
+**AC31** — Dữ liệu nhạy cảm được bảo vệ (liên quan BR18)
+- Given: Hệ thống lưu trữ và truyền tải dữ liệu cá nhân, vị trí, giao dịch
+- When: Dữ liệu được lưu vào cơ sở dữ liệu hoặc truyền qua mạng
+- Then: Dữ liệu được mã hóa khi lưu trữ và truyền tải qua kênh an toàn (HTTPS)
+
+##### 13.9 Bảng tổng hợp liên kết AC → BN/UC
+
+| Nhóm AC | Business Requirement | Use Case liên quan |
+|---|---|---|
+| 13.1 (AC01–AC04) | BN01, BN02 | UC01, UC02, UC10–UC13 |
+| 13.2 (AC05–AC11) | BN03, BN04, BN05, BN06 | UC04, UC14, UC26 |
+| 13.3 (AC12–AC15) | BN07, BN08, BN09, BN17 | UC05, UC06, UC15 |
+| 13.4 (AC16–AC20) | BN10, BN11, BN12, BN13 | UC07, UC27, UC30 |
+| 13.5 (AC21–AC22) | BN14, BN15 | UC09, UC17, UC28 |
+| 13.6 (AC23–AC25) | BN16 | UC08 |
+| 13.7 (AC26–AC29) | BN18, BN19, BN20, BN21 | UC19–UC25 |
+| 13.8 (AC30–AC31) | BN22, BN23, BN24, BN25 | UC02, UC11, UC18 |
+
 
 
 
