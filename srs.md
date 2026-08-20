@@ -113,4 +113,81 @@ Từ Business Context và Business Purpose đã phân tích ở Bước 1, BA x�
 - **BG08 – Kiến trúc linh hoạt:** Cho phép bổ sung loại dịch vụ mới, phương thức thanh toán mới, nhà cung cấp thông báo mới hoặc thay đổi thành phần kỹ thuật mà không cần xây lại toàn bộ ứng dụng.
 - **BG09 – Đánh giá tài xế:** Sau khi hoàn thành chuyến, khách hàng có thể đánh giá tài xế; dữ liệu đánh giá được dùng để cải thiện chất lượng dịch vụ và làm tiêu chí tham khảo trong hoạt động vận hành (ví dụ: theo dõi hiệu quả tài xế trong báo cáo — liên quan BG05).
 
+.....
+
+#### Bước 4: Xác định Phạm vi dự án (Scope)
+
+Với thời gian triển khai chỉ **7 tuần**, BA cần xác định rõ phạm vi để đội phát triển tập trung xây dựng **MVP (Minimum Viable Product)** — đáp ứng đúng luồng nghiệp vụ cốt lõi mà khách hàng mô tả, đồng thời loại trừ các phần có thể mở rộng sau để tránh trễ tiến độ.
+
+##### 4.1 Trong phạm vi (In-Scope)
+
+**Module Khách hàng (Customer)**
+- Đăng ký tài khoản, đăng nhập, cập nhật thông tin cá nhân
+- Nhập điểm đón/điểm đến, chọn loại xe, gửi yêu cầu đặt xe
+- Theo dõi trạng thái chuyến đi (đang tìm tài xế, tài xế đã nhận, thời gian dự kiến đến, trạng thái hiện tại)
+- Xem lịch sử chuyến đi, số tiền phải trả
+- Đánh giá tài xế sau khi hoàn thành chuyến
+
+**Module Tài xế (Driver)**
+- Đăng ký hoặc được nhân viên vận hành tạo tài khoản
+- Cập nhật hồ sơ, thông tin phương tiện, trạng thái hoạt động (sẵn sàng/không sẵn sàng)
+- Nhận thông báo yêu cầu chuyến phù hợp, chấp nhận/từ chối chuyến
+- Cập nhật trạng thái chuyến: đã đến điểm đón, đã đón khách, đang di chuyển, hoàn thành
+- Cập nhật vị trí để phục vụ tìm tài xế gần khách hàng
+
+**Module Tìm & Phân công tài xế (Driver Matching)**
+- Xác định tài xế phù hợp dựa trên vị trí, trạng thái sẵn sàng
+- Cơ chế tìm tài xế thay thế khi tài xế được đề xuất không phản hồi/từ chối
+- Thông báo cho khách hàng khi không tìm được tài xế
+
+**Module Tính cước & Thanh toán (Fare & Payment)**
+- Tính số tiền khách hàng phải trả dựa trên loại dịch vụ và thông tin chuyến đi
+- Thanh toán tiền mặt
+- Thanh toán điện tử (tích hợp với 1 nhà cung cấp thanh toán bên ngoài, không lưu thông tin thẻ nhạy cảm trong hệ thống CAB)
+- Thông báo và cho phép xử lý lại khi giao dịch điện tử thất bại
+
+**Module Thông báo (Notification)**
+- Thông báo cho khách hàng: yêu cầu được tiếp nhận, tài xế nhận chuyến, tài xế đến điểm đón, chuyến hoàn thành, kết quả thanh toán
+- Thông báo cho tài xế: chuyến mới, thay đổi liên quan đến chuyến đang thực hiện
+- Kiến trúc cho phép mở rộng thêm kênh thông báo sau này (chỉ cần thiết kế sẵn, chưa cần triển khai nhiều kênh trong 7 tuần)
+
+**Module Quản trị vận hành (Admin/Operations)**
+- Quản lý khách hàng, tài xế, phương tiện, chuyến đi
+- Xem các chuyến đang diễn ra, kiểm tra trạng thái tài xế
+- Hỗ trợ xử lý chuyến bị lỗi, tra cứu lịch sử giao dịch
+- Phân quyền cơ bản (nhân viên thường vs. thao tác nhạy cảm)
+- Báo cáo cơ bản: số lượng chuyến, doanh thu, tỷ lệ hoàn thành/hủy, hiệu quả tài xế
+
+**Yêu cầu phi chức năng (Non-Functional)**
+- Xác thực người dùng (khách hàng, tài xế) trước khi dùng chức năng cần tài khoản
+- Kiểm soát quyền truy cập cho thao tác quản trị
+- Lưu vết (audit log) các thao tác quan trọng
+- Kiến trúc cho phép các thành phần scale độc lập, cô lập lỗi (một module lỗi không kéo sập toàn hệ thống)
+
+##### 4.2 Ngoài phạm vi (Out-of-Scope)
+
+> Các mục dưới đây **không nên triển khai trong giai đoạn 7 tuần này**, do chưa được khách hàng chốt chi tiết hoặc không phải yêu cầu cốt lõi của MVP. BA cần ghi nhận và xác nhận lại với khách hàng để đưa vào roadmap giai đoạn sau.
+
+- Tích hợp **nhiều** nhà cung cấp thanh toán cùng lúc (chỉ tích hợp 1 nhà cung cấp trong phạm vi MVP)
+- Tích hợp **nhiều kênh thông báo** (SMS, email, push, in-app...) — chỉ cần 1 kênh chính, kiến trúc chừa sẵn khả năng mở rộng
+- Tính năng khuyến mãi, mã giảm giá, chương trình khách hàng thân thiết
+- Đặt xe hộ người khác, đặt xe theo lịch (đặt trước)
+- Chat trực tiếp giữa khách hàng và tài xế trong ứng dụng
+- Bản đồ nội bộ tự phát triển (dự kiến dùng dịch vụ bản đồ bên thứ ba có sẵn, không tự xây engine định vị/routing)
+- Ứng dụng dành riêng cho nhiều ngôn ngữ/đa quốc gia (chỉ 1 ngôn ngữ/thị trường ban đầu)
+- Chính sách hủy chuyến chi tiết, biểu phí phạt hủy (chưa được khách hàng chốt — cần làm rõ trước, xem mục Open Issues)
+- Cách tính cước nâng cao (giờ cao điểm, surge pricing, khuyến mãi theo khu vực) — chỉ áp dụng công thức tính cước cơ bản trong MVP
+- Xử lý chi tiết khi mất kết nối mạng (offline mode) — chưa được chốt, cần làm rõ
+- Chính sách và thời gian lưu trữ dữ liệu dài hạn (data retention/archiving) — chưa được chốt, cần làm rõ
+- Ứng dụng di động native (iOS/Android) đầy đủ — trong 7 tuần ưu tiên nền tảng chính (web hoặc 1 nền tảng di động), việc phát triển đa nền tảng đầy đủ để giai đoạn sau
+- Tính năng phân tích nâng cao / AI dự đoán nhu cầu, tối ưu tuyến đường
+
+
+
+
+
+
+
+
+
   
