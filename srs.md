@@ -262,7 +262,7 @@ Từ các Mục tiêu nghiệp vụ (Business Goals) đã xác định ở Bư�
 | BN28 | Triển khai từng phần (incremental deployment) | Các chức năng mới có thể được triển khai từng phần, hạn chế ảnh hưởng đến các chức năng đang hoạt động |
 | BN29 | Kiến trúc mở rộng linh hoạt | Hệ thống có kiến trúc đủ linh hoạt để bổ sung loại dịch vụ mới, phương thức thanh toán mới, nhà cung cấp thông báo mới mà không cần xây lại toàn bộ ứng dụng |
 
-**Ghi chú:** 29 yêu cầu nghiệp vụ được chia thành 9 nhóm, bám sát nội dung tài liệu yêu cầu gốc và có thể truy vết ngược về Business Goal tương ứng: Nhóm 2 → BG01; Nhóm 4 → BG02; Nhóm 3 (BN08) → BG03; Nhóm 5 → BG04; Nhóm 7 → BG05; Nhóm 9 → BG06 & BG08; Nhóm 8 → BG07; Nhóm 6 → BG09.
+
 
 
 
