@@ -181,6 +181,88 @@ Với thời gian triển khai này , BA cần xác định rõ phạm vi để 
 - Chính sách và thời gian lưu trữ dữ liệu dài hạn (data retention/archiving) — chưa được chốt, cần làm rõ
 - Ứng dụng di động native (iOS/Android) đầy đủ — trong 7 tuần ưu tiên nền tảng chính (web hoặc 1 nền tảng di động), việc phát triển đa nền tảng đầy đủ để giai đoạn sau
 - Tính năng phân tích nâng cao / AI dự đoán nhu cầu, tối ưu tuyến đường
+....
+
+
+#### Bước 5: Chuyển đổi thành Yêu cầu nghiệp vụ (Business Requirements)
+
+Từ các Mục tiêu nghiệp vụ (Business Goals) đã xác định ở Bước 3, BA cụ thể hóa thành các **Yêu cầu nghiệp vụ (Business Requirements)** — mô tả những việc hệ thống phải làm được để đạt mục tiêu đề ra. Mỗi yêu cầu được ký hiệu bằng mã **BN**, được nhóm theo từng khối chức năng để dễ theo dõi.
+
+##### Nhóm 1: Tài khoản & Hồ sơ người dùng
+
+| Mã | Tên yêu cầu | Diễn giải |
+|---|---|---|
+| BN01 | Đăng ký & đăng nhập tài khoản | Khách hàng và tài xế có thể đăng ký tài khoản mới, đăng nhập vào hệ thống; tài xế có thể được nhân viên vận hành tạo tài khoản thay |
+| BN02 | Quản lý thông tin cá nhân & hồ sơ | Khách hàng cập nhật thông tin cá nhân; tài xế cập nhật hồ sơ, thông tin phương tiện và trạng thái hoạt động |
+
+##### Nhóm 2: Đặt xe & Tìm tài xế
+
+| Mã | Tên yêu cầu | Diễn giải |
+|---|---|---|
+| BN03 | Đặt chuyến xe | Khách hàng nhập điểm đón, điểm đến, chọn loại xe và gửi yêu cầu đặt xe |
+| BN04 | Tự động tìm tài xế | Hệ thống xác định tài xế phù hợp dựa trên vị trí, trạng thái sẵn sàng và tiêu chí vận hành; tự động tìm tài xế khác nếu tài xế đầu tiên không phản hồi/từ chối |
+| BN05 | Thông báo khi không tìm được tài xế | Hệ thống thông báo rõ ràng cho khách hàng trong trường hợp không tìm được tài xế phù hợp |
+| BN06 | Nhận/từ chối chuyến (tài xế) | Tài xế nhận thông báo yêu cầu chuyến phù hợp và có thể chấp nhận hoặc từ chối |
+
+##### Nhóm 3: Thực hiện chuyến đi
+
+| Mã | Tên yêu cầu | Diễn giải |
+|---|---|---|
+| BN07 | Cập nhật trạng thái chuyến đi | Tài xế cập nhật các trạng thái: đã đến điểm đón, đã đón khách, đang di chuyển, hoàn thành chuyến |
+| BN08 | Theo dõi chuyến đi theo thời gian thực | Khách hàng theo dõi được trạng thái tìm tài xế, tài xế đã nhận chuyến, thời gian dự kiến đến và trạng thái hiện tại của chuyến |
+| BN09 | Cập nhật vị trí tài xế | Hệ thống lưu và cập nhật vị trí tài xế để hỗ trợ tìm tài xế gần khách hàng và dự đoán thời gian đến |
+| BN17 | Xem lịch sử chuyến đi | Khách hàng xem được lịch sử các chuyến đã thực hiện và số tiền đã trả |
+
+##### Nhóm 4: Tính cước & Thanh toán
+
+| Mã | Tên yêu cầu | Diễn giải |
+|---|---|---|
+| BN10 | Tính cước chuyến đi | Hệ thống xác định số tiền khách hàng phải trả dựa trên loại dịch vụ và thông tin chuyến đi sau khi hoàn thành |
+| BN11 | Thanh toán tiền mặt | Khách hàng có thể thanh toán chuyến đi bằng tiền mặt |
+| BN12 | Thanh toán điện tử | Khách hàng có thể thanh toán qua phương thức điện tử, tích hợp với nhà cung cấp thanh toán bên ngoài, không lưu thông tin nhạy cảm trong hệ thống CAB |
+| BN13 | Xử lý lỗi thanh toán | Hệ thống thông báo cho khách hàng và cho phép xử lý lại khi giao dịch thanh toán điện tử thất bại |
+
+##### Nhóm 5: Thông báo
+
+| Mã | Tên yêu cầu | Diễn giải |
+|---|---|---|
+| BN14 | Thông báo cho khách hàng | Khách hàng nhận thông báo khi: yêu cầu được tiếp nhận, tài xế nhận chuyến, tài xế đến điểm đón, chuyến hoàn thành, kết quả thanh toán |
+| BN15 | Thông báo cho tài xế | Tài xế nhận thông báo về chuyến mới hoặc thay đổi liên quan đến chuyến đang thực hiện |
+
+##### Nhóm 6: Đánh giá dịch vụ
+
+| Mã | Tên yêu cầu | Diễn giải |
+|---|---|---|
+| BN16 | Đánh giá tài xế | Khách hàng đánh giá tài xế sau khi hoàn thành chuyến đi |
+
+##### Nhóm 7: Quản trị & Vận hành
+
+| Mã | Tên yêu cầu | Diễn giải |
+|---|---|---|
+| BN18 | Quản trị khách hàng, tài xế, phương tiện, chuyến đi | Nhân viên vận hành quản lý thông tin khách hàng, tài xế, phương tiện và các chuyến đi trên giao diện quản trị |
+| BN19 | Giám sát chuyến đi & xử lý sự cố | Nhân viên vận hành xem các chuyến đang diễn ra, kiểm tra trạng thái tài xế, hỗ trợ xử lý chuyến bị lỗi, tra cứu lịch sử giao dịch |
+| BN20 | Phân quyền chức năng quản trị | Hệ thống phân quyền để nhân viên thông thường không thể thực hiện các thao tác quản trị nhạy cảm |
+| BN21 | Báo cáo vận hành | Hệ thống cung cấp báo cáo về số lượng chuyến, doanh thu, tỷ lệ chuyến hoàn thành, tỷ lệ hủy và hiệu quả hoạt động của tài xế |
+
+##### Nhóm 8: Bảo mật & Kiểm soát dữ liệu
+
+| Mã | Tên yêu cầu | Diễn giải |
+|---|---|---|
+| BN22 | Xác thực người dùng | Khách hàng và tài xế phải được xác thực trước khi sử dụng các chức năng yêu cầu tài khoản |
+| BN23 | Kiểm soát truy cập | Các thao tác quản trị phải được kiểm soát quyền truy cập |
+| BN24 | Bảo vệ dữ liệu | Thông tin cá nhân, thông tin phương tiện, dữ liệu vị trí và dữ liệu giao dịch phải được bảo vệ |
+| BN25 | Lưu vết thao tác (Audit log) | Hệ thống lưu vết các thao tác quan trọng để phục vụ kiểm tra khi có sự cố |
+
+##### Nhóm 9: Kiến trúc & Khả năng mở rộng
+
+| Mã | Tên yêu cầu | Diễn giải |
+|---|---|---|
+| BN26 | Khả năng mở rộng độc lập | Các thành phần của hệ thống có khả năng mở rộng (scale) độc lập khi tải tăng cao |
+| BN27 | Cô lập lỗi giữa các module | Lỗi ở chức năng thanh toán hoặc thông báo không được làm toàn bộ hệ thống đặt xe ngừng hoạt động |
+| BN28 | Triển khai từng phần (incremental deployment) | Các chức năng mới có thể được triển khai từng phần, hạn chế ảnh hưởng đến các chức năng đang hoạt động |
+| BN29 | Kiến trúc mở rộng linh hoạt | Hệ thống có kiến trúc đủ linh hoạt để bổ sung loại dịch vụ mới, phương thức thanh toán mới, nhà cung cấp thông báo mới mà không cần xây lại toàn bộ ứng dụng |
+
+**Ghi chú:** 29 yêu cầu nghiệp vụ được chia thành 9 nhóm, bám sát nội dung tài liệu yêu cầu gốc và có thể truy vết ngược về Business Goal tương ứng: Nhóm 2 → BG01; Nhóm 4 → BG02; Nhóm 3 (BN08) → BG03; Nhóm 5 → BG04; Nhóm 7 → BG05; Nhóm 9 → BG06 & BG08; Nhóm 8 → BG07; Nhóm 6 → BG09.
 
 
 
