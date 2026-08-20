@@ -33,7 +33,7 @@ Mục tiêu chính là hiểu được **Business Context** - tức là **ngữ 
 - **Kết quả mong muốn (To-Be) của khách hàng là gì?**
   Một nền tảng CAB hoàn chỉnh, đáp ứng toàn bộ quy trình từ tạo yêu cầu → tìm/phân công tài xế → thực hiện chuyến → tính cước → thanh toán → thông báo → đánh giá sau chuyến, có khả năng mở rộng linh hoạt (thêm dịch vụ, phương thức thanh toán, kênh thông báo) và đảm bảo bảo mật, ổn định khi vận hành ở quy mô lớn.
 
-.....
+
 
 #### Bước 2: Xác định Stakeholders (Các bên liên quan)
 
@@ -82,7 +82,7 @@ quadrantChart
 - **Giữ hài lòng (High Power – Low Interest):** Nhân viên vận hành, Bộ phận bảo mật → cần được thông báo và đảm bảo yêu cầu của họ được đáp ứng dù không tham gia hàng ngày.
 - **Giữ thông tin đầy đủ (Low Power – High Interest):** Khách hàng, Tài xế, Đội phát triển → quan tâm trực tiếp đến kết quả, cần được cập nhật thông tin thường xuyên nhưng không có quyền quyết định phạm vi dự án.
 - **Giám sát tối thiểu (Low Power – Low Interest):** Nhà cung cấp thanh toán bên ngoài → chỉ cần phối hợp ở mức tích hợp kỹ thuật, không cần tham gia sâu vào quá trình phân tích.
-.....
+
 
 
 #### Bước 3: Xác định Mục tiêu nghiệp vụ (Business Goals)
@@ -113,7 +113,7 @@ Từ Business Context và Business Purpose đã phân tích ở Bước 1, BA x�
 - **BG08 – Kiến trúc linh hoạt:** Cho phép bổ sung loại dịch vụ mới, phương thức thanh toán mới, nhà cung cấp thông báo mới hoặc thay đổi thành phần kỹ thuật mà không cần xây lại toàn bộ ứng dụng.
 - **BG09 – Đánh giá tài xế:** Sau khi hoàn thành chuyến, khách hàng có thể đánh giá tài xế; dữ liệu đánh giá được dùng để cải thiện chất lượng dịch vụ và làm tiêu chí tham khảo trong hoạt động vận hành (ví dụ: theo dõi hiệu quả tài xế trong báo cáo — liên quan BG05).
 
-.....
+
 
 #### Bước 4: Xác định Phạm vi dự án (Scope)
 
@@ -181,7 +181,7 @@ Với thời gian triển khai này , BA cần xác định rõ phạm vi để 
 - Chính sách và thời gian lưu trữ dữ liệu dài hạn (data retention/archiving) — chưa được chốt, cần làm rõ
 - Ứng dụng di động native (iOS/Android) đầy đủ — trong 7 tuần ưu tiên nền tảng chính (web hoặc 1 nền tảng di động), việc phát triển đa nền tảng đầy đủ để giai đoạn sau
 - Tính năng phân tích nâng cao / AI dự đoán nhu cầu, tối ưu tuyến đường
-....
+
 
 
 #### Bước 5: Chuyển đổi thành Yêu cầu nghiệp vụ (Business Requirements)
@@ -263,7 +263,7 @@ Từ các Mục tiêu nghiệp vụ (Business Goals) đã xác định ở Bư�
 | BN29 | Kiến trúc mở rộng linh hoạt | Hệ thống có kiến trúc đủ linh hoạt để bổ sung loại dịch vụ mới, phương thức thanh toán mới, nhà cung cấp thông báo mới mà không cần xây lại toàn bộ ứng dụng |
 
 
-.......
+
 
 #### Bước 6: Xây dựng Business Process (Quy trình nghiệp vụ)
 
@@ -363,6 +363,139 @@ Từ các Yêu cầu nghiệp vụ (BN) đã xác định ở Bước 5, BA xây
 | 6.5 Thông báo | Hệ thống | BN14, BN15 |
 | 6.6 Quản trị & Vận hành | Nhân viên vận hành, Hệ thống | BN18, BN19, BN20, BN21, BN23, BN25 |
 | 6.7 Quản lý tài khoản & Hồ sơ | Khách hàng, Tài xế | BN01, BN02 |
+
+
+#### Bước 7: Phân rã thành Yêu cầu chức năng (Functional Requirements - FR)
+
+Từ mỗi Yêu cầu nghiệp vụ (BN) đã xác định ở Bước 5, BA tiếp tục phân rã thành các **Yêu cầu chức năng (Functional Requirements - FR)** — mô tả chi tiết từng bước xử lý cụ thể mà hệ thống phải thực hiện, làm cơ sở cho đội phát triển thiết kế và xây dựng.
+
+##### 7.1 Nhóm Tài khoản & Hồ sơ (từ BN01, BN02)
+
+- **FR01:** Cho phép khách hàng đăng ký tài khoản bằng số điện thoại/email
+- **FR02:** Cho phép khách hàng/tài xế đăng nhập bằng tài khoản đã đăng ký
+- **FR03:** Cho phép nhân viên vận hành tạo tài khoản thay cho tài xế
+- **FR04:** Cho phép khách hàng cập nhật thông tin cá nhân (họ tên, số điện thoại, email...)
+- **FR05:** Cho phép tài xế cập nhật hồ sơ cá nhân và thông tin phương tiện (biển số, loại xe, hãng xe...)
+- **FR06:** Cho phép tài xế chuyển đổi trạng thái hoạt động: sẵn sàng nhận chuyến / không sẵn sàng
+
+##### 7.2 Nhóm Đặt xe & Tìm tài xế (từ BN03, BN04, BN05, BN06)
+
+**Đặt chuyến (BN03):**
+- **FR07:** Cho phép khách hàng nhập điểm đón (chọn trên bản đồ hoặc nhập địa chỉ)
+- **FR08:** Cho phép khách hàng nhập điểm đến
+- **FR09:** Cho phép khách hàng chọn loại xe (vd: xe máy, xe 4 chỗ, xe 7 chỗ...)
+- **FR10:** Cho phép khách hàng gửi yêu cầu đặt xe sau khi xác nhận đầy đủ thông tin
+
+**Tìm tài xế (BN04) — ví dụ minh họa của bạn:**
+- **FR11:** Xác định vị trí hiện tại của khách hàng (lấy từ điểm đón)
+- **FR12:** Tìm các tài xế đang ở trạng thái online/sẵn sàng trong bán kính xung quanh vị trí khách hàng
+- **FR13:** Lọc tài xế theo loại xe khách hàng đã chọn
+- **FR14:** *(Điều kiện)* Nếu yêu cầu của khách hàng có tiêu chí "tài xế rating cao" → lọc thêm theo điểm đánh giá tối thiểu; nếu không có tiêu chí này → bỏ qua bước lọc rating
+- **FR15:** Sắp xếp danh sách tài xế phù hợp theo khoảng cách gần nhất
+- **FR16:** Gửi thông báo mời chuyến lần lượt đến tài xế theo thứ tự ưu tiên
+- **FR17:** Đặt thời gian giới hạn chờ phản hồi cho mỗi tài xế được mời
+- **FR18:** Nếu tài xế từ chối hoặc hết thời gian chờ → loại khỏi danh sách và mời tài xế tiếp theo (quay lại FR16)
+- **FR19:** Nếu không còn tài xế phù hợp trong danh sách → dừng tìm kiếm
+
+**Không tìm được tài xế (BN05):**
+- **FR20:** Thông báo rõ ràng cho khách hàng khi không tìm được tài xế phù hợp
+- **FR21:** Cho phép khách hàng thử lại yêu cầu đặt xe sau khi nhận thông báo
+
+**Tài xế phản hồi (BN06):**
+- **FR22:** Hiển thị thông tin chuyến mời (điểm đón, điểm đến, loại xe, cước dự kiến) cho tài xế
+- **FR23:** Cho phép tài xế chấp nhận chuyến
+- **FR24:** Cho phép tài xế từ chối chuyến
+- **FR25:** Xác nhận tài xế chính thức cho chuyến sau khi chấp nhận, khóa chuyến không cho tài xế khác nhận trùng
+
+##### 7.3 Nhóm Thực hiện chuyến đi (từ BN07, BN08, BN09, BN17)
+
+- **FR26:** Cho phép tài xế cập nhật trạng thái "đã đến điểm đón"
+- **FR27:** Cho phép tài xế cập nhật trạng thái "đã đón khách"
+- **FR28:** Cho phép tài xế cập nhật trạng thái "đang di chuyển"
+- **FR29:** Cho phép tài xế cập nhật trạng thái "hoàn thành chuyến"
+- **FR30:** Hiển thị cho khách hàng trạng thái chuyến đi theo thời gian thực
+- **FR31:** Hiển thị thời gian dự kiến tài xế đến điểm đón (ETA)
+- **FR32:** Ghi nhận vị trí tài xế định kỳ (vd: mỗi vài giây) trong suốt chuyến đi
+- **FR33:** Cho phép khách hàng xem lại danh sách các chuyến đã thực hiện
+- **FR34:** Hiển thị chi tiết một chuyến trong lịch sử (điểm đón, điểm đến, số tiền, tài xế, thời gian)
+
+##### 7.4 Nhóm Tính cước & Thanh toán (từ BN10, BN11, BN12, BN13)
+
+- **FR35:** Tính khoảng cách và thời gian di chuyển thực tế của chuyến đi
+- **FR36:** Tính số tiền phải trả dựa trên loại dịch vụ và công thức cước cơ bản (khoảng cách/thời gian)
+- **FR37:** Hiển thị số tiền cần thanh toán cho khách hàng sau khi chuyến hoàn thành
+- **FR38:** Cho phép khách hàng chọn phương thức thanh toán: tiền mặt hoặc điện tử
+- **FR39:** Ghi nhận xác nhận của tài xế khi khách hàng thanh toán tiền mặt
+- **FR40:** Gửi yêu cầu thanh toán điện tử đến nhà cung cấp thanh toán bên ngoài (qua API/tích hợp)
+- **FR41:** Nhận kết quả giao dịch từ nhà cung cấp thanh toán (thành công/thất bại)
+- **FR42:** Thông báo lỗi cho khách hàng khi giao dịch điện tử thất bại
+- **FR43:** Cho phép khách hàng thử thanh toán lại hoặc đổi phương thức khi giao dịch thất bại
+- **FR44:** Không lưu trữ trực tiếp thông tin thẻ/tài khoản thanh toán nhạy cảm trong hệ thống CAB
+
+##### 7.5 Nhóm Thông báo (từ BN14, BN15)
+
+- **FR45:** Gửi thông báo cho khách hàng khi yêu cầu đặt xe được tiếp nhận
+- **FR46:** Gửi thông báo cho khách hàng khi tài xế nhận chuyến
+- **FR47:** Gửi thông báo cho khách hàng khi tài xế đến điểm đón
+- **FR48:** Gửi thông báo cho khách hàng khi chuyến hoàn thành
+- **FR49:** Gửi thông báo cho khách hàng khi có kết quả thanh toán
+- **FR50:** Gửi thông báo cho tài xế khi có chuyến mới phù hợp
+- **FR51:** Gửi thông báo cho tài xế khi có thay đổi liên quan đến chuyến đang thực hiện
+- **FR52:** Thiết kế module thông báo dạng độc lập (service riêng) để dễ bổ sung kênh gửi mới sau này
+
+##### 7.6 Nhóm Đánh giá tài xế (từ BN16)
+
+- **FR53:** Hiển thị lời mời đánh giá cho khách hàng sau khi thanh toán thành công
+- **FR54:** Cho phép khách hàng chọn số sao đánh giá (vd: 1–5 sao)
+- **FR55:** Cho phép khách hàng nhập nhận xét (tùy chọn)
+- **FR56:** Lưu đánh giá và cập nhật điểm đánh giá trung bình của tài xế
+- **FR57:** Cho phép khách hàng bỏ qua bước đánh giá
+
+##### 7.7 Nhóm Quản trị & Vận hành (từ BN18, BN19, BN20, BN21)
+
+- **FR58:** Hiển thị danh sách khách hàng, tài xế, phương tiện cho nhân viên vận hành
+- **FR59:** Cho phép nhân viên vận hành tìm kiếm/lọc thông tin khách hàng, tài xế, chuyến đi
+- **FR60:** Hiển thị danh sách các chuyến đang diễn ra theo thời gian thực
+- **FR61:** Hiển thị trạng thái hiện tại của từng tài xế
+- **FR62:** Cho phép nhân viên vận hành can thiệp xử lý chuyến gặp sự cố (vd: hủy chuyến, gán lại tài xế)
+- **FR63:** Cho phép tra cứu lịch sử giao dịch theo khách hàng/tài xế/khoảng thời gian
+- **FR64:** Kiểm tra quyền của nhân viên trước khi cho thực hiện thao tác nhạy cảm
+- **FR65:** Tạo báo cáo số lượng chuyến theo khoảng thời gian
+- **FR66:** Tạo báo cáo doanh thu theo khoảng thời gian
+- **FR67:** Tạo báo cáo tỷ lệ chuyến hoàn thành / tỷ lệ hủy
+- **FR68:** Tạo báo cáo hiệu quả hoạt động của từng tài xế (số chuyến, điểm đánh giá trung bình)
+
+##### 7.8 Nhóm Bảo mật & Kiểm soát dữ liệu (từ BN22, BN23, BN24, BN25)
+
+- **FR69:** Xác thực khách hàng/tài xế bằng tài khoản (mật khẩu/OTP) trước khi truy cập chức năng yêu cầu đăng nhập
+- **FR70:** Kiểm tra vai trò (role) người dùng trước khi cho phép thực hiện thao tác quản trị
+- **FR71:** Mã hóa/bảo vệ dữ liệu cá nhân, dữ liệu vị trí và dữ liệu giao dịch khi lưu trữ và truyền tải
+- **FR72:** Ghi log mọi thao tác quan trọng (ai thực hiện, thời gian, hành động) vào Audit Trail
+- **FR73:** Cho phép nhân viên có quyền phù hợp tra cứu Audit Trail khi cần điều tra sự cố
+
+##### 7.9 Nhóm Kiến trúc & Khả năng mở rộng (từ BN26, BN27, BN28, BN29)
+
+> *Ghi chú: Nhóm này thiên về yêu cầu phi chức năng (NFR) hơn là FR, nhưng được liệt kê dưới dạng yêu cầu kỹ thuật cụ thể để đội phát triển có cơ sở thiết kế kiến trúc.*
+
+- **FR74:** Tách các module (đặt xe, thanh toán, thông báo, quản trị...) thành các service độc lập, có thể scale riêng
+- **FR75:** Thiết kế cơ chế cô lập lỗi (vd: circuit breaker, timeout, retry) giữa các service để lỗi một module không lan sang module khác
+- **FR76:** Thiết kế API/kiến trúc dạng module hóa để có thể triển khai (deploy) cập nhật từng phần
+- **FR77:** Thiết kế lớp tích hợp thanh toán (payment adapter) và thông báo (notification adapter) theo dạng plug-in để dễ bổ sung nhà cung cấp mới
+
+##### 7.10 Bảng tổng hợp liên kết FR → BN
+
+| Nhóm FR | Business Requirement gốc |
+|---|---|
+| 7.1 (FR01–FR06) | BN01, BN02 |
+| 7.2 (FR07–FR25) | BN03, BN04, BN05, BN06 |
+| 7.3 (FR26–FR34) | BN07, BN08, BN09, BN17 |
+| 7.4 (FR35–FR44) | BN10, BN11, BN12, BN13 |
+| 7.5 (FR45–FR52) | BN14, BN15 |
+| 7.6 (FR53–FR57) | BN16 |
+| 7.7 (FR58–FR68) | BN18, BN19, BN20, BN21 |
+| 7.8 (FR69–FR73) | BN22, BN23, BN24, BN25 |
+| 7.9 (FR74–FR77) | BN26, BN27, BN28, BN29 |
+
 
 
 
