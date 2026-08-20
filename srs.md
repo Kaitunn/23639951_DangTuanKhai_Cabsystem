@@ -600,6 +600,327 @@ Sau khi có các Yêu cầu chức năng (FR), BA cần xác định **Business 
 | Bảo mật & Dữ liệu | BR17–BR18 | EX18 | Đã rõ |
 
 
+#### Bước 9: Data Modeling (Xây dựng mô hình dữ liệu)
+
+Từ các Business Requirements và Functional Requirements đã xác định, BA xác định các **thực thể dữ liệu (entities)** cốt lõi mà hệ thống cần quản lý, thuộc tính chính của từng thực thể, và mối quan hệ giữa chúng — làm cơ sở cho đội phát triển thiết kế cơ sở dữ liệu.
+
+##### 9.1 Danh sách các thực thể (Entities)
+
+| Thực thể | Mô tả |
+|---|---|
+| **Account** | Tài khoản đăng nhập chung, dùng chung cho Customer, Driver, OperationsStaff (xác thực) |
+| **Customer** | Thông tin khách hàng |
+| **Driver** | Thông tin tài xế |
+| **Vehicle** | Thông tin phương tiện của tài xế |
+| **OperationsStaff** | Nhân viên vận hành |
+| **Role** | Vai trò/nhóm quyền (dùng cho phân quyền OperationsStaff) |
+| **Trip** | Chuyến đi |
+| **TripStatusHistory** | Lịch sử thay đổi trạng thái của một chuyến đi |
+| **DriverLocation** | Vị trí tài xế theo thời gian (real-time tracking) |
+| **Payment** | Giao dịch thanh toán của một chuyến đi |
+| **PaymentMethod** | Phương thức thanh toán (tiền mặt/điện tử) khách hàng đã lưu/sử dụng |
+| **Notification** | Thông báo gửi cho khách hàng/tài xế |
+| **Rating** | Đánh giá của khách hàng dành cho tài xế sau chuyến |
+| **AuditLog** | Nhật ký ghi vết các thao tác quan trọng (đặc biệt của nhân viên vận hành) |
+
+##### 9.2 Thuộc tính chính của từng thực thể
+
+**Account**
+- account_id (PK)
+- phone_or_email
+- password_hash
+- account_type (customer / driver / operations_staff)
+- created_at
+- status (active / locked)
+
+**Customer**
+- customer_id (PK)
+- account_id (FK)
+- full_name
+- default_pickup_address *(tuỳ chọn)*
+- created_at
+
+**Driver**
+- driver_id (PK)
+- account_id (FK)
+- full_name
+- status (available / unavailable / on_trip)
+- average_rating
+- created_at
+
+**Vehicle**
+- vehicle_id (PK)
+- driver_id (FK)
+- vehicle_type (xe máy / 4 chỗ / 7 chỗ...)
+- license_plate
+- brand_model
+- status (active / inactive)
+
+**OperationsStaff**
+- staff_id (PK)
+- account_id (FK)
+- full_name
+- role_id (FK)
+
+**Role**
+- role_id (PK)
+- role_name
+- permissions (danh sách quyền — có thể tách bảng Permission riêng nếu cần chi tiết hơn)
+
+**Trip**
+- trip_id (PK)
+- customer_id (FK)
+- driver_id (FK, nullable — chưa có tài xế nhận)
+- vehicle_type_requested
+- pickup_location (lat/long, address)
+- dropoff_location (lat/long, address)
+- current_status (searching / assigned / arrived / picked_up / in_progress / completed / cancelled)
+- requested_at
+- completed_at
+- distance
+- duration
+- fare_amount
+
+**TripStatusHistory**
+- history_id (PK)
+- trip_id (FK)
+- status
+- changed_at
+- changed_by (driver_id / system)
+
+**DriverLocation**
+- location_id (PK)
+- driver_id (FK)
+- latitude
+- longitude
+- recorded_at
+
+**Payment**
+- payment_id (PK)
+- trip_id (FK, 1-1)
+- amount
+- payment_method_type (cash / electronic)
+- status (pending / success / failed)
+- transaction_ref (mã tham chiếu từ nhà cung cấp thanh toán bên ngoài — KHÔNG lưu thông tin thẻ)
+- paid_at
+
+**PaymentMethod**
+- payment_method_id (PK)
+- customer_id (FK)
+- method_type (cash / e-wallet / card_token...)
+- provider_token (token từ nhà cung cấp thanh toán, không lưu số thẻ thật)
+- created_at
+
+**Notification**
+- notification_id (PK)
+- recipient_type (customer / driver)
+- recipient_id
+- trip_id (FK, nullable)
+- event_type (request_received / driver_assigned / driver_arrived / trip_completed / payment_result / new_trip_offer / trip_update)
+- content
+- sent_at
+- status (sent / failed)
+
+**Rating**
+- rating_id (PK)
+- trip_id (FK, 1-1)
+- customer_id (FK)
+- driver_id (FK)
+- stars (1–5)
+- comment
+- created_at
+
+**AuditLog**
+- log_id (PK)
+- staff_id (FK, nullable)
+- action_type
+- target_entity
+- target_id
+- action_detail
+- created_at
+
+##### 9.3 Mối quan hệ giữa các thực thể (Relationships)
+
+| Quan hệ | Loại |
+|---|---|
+| Account – Customer | 1 – 1 |
+| Account – Driver | 1 – 1 |
+| Account – OperationsStaff | 1 – 1 |
+| Role – OperationsStaff | 1 – nhiều |
+| Driver – Vehicle | 1 – nhiều (tài xế có thể có nhiều phương tiện, nhưng thường 1 phương tiện đang hoạt động) |
+| Customer – Trip | 1 – nhiều |
+| Driver – Trip | 1 – nhiều |
+| Trip – TripStatusHistory | 1 – nhiều |
+| Driver – DriverLocation | 1 – nhiều |
+| Trip – Payment | 1 – 1 |
+| Customer – PaymentMethod | 1 – nhiều |
+| Trip – Rating | 1 – 1 |
+| Customer – Rating | 1 – nhiều |
+| Driver – Rating | 1 – nhiều |
+| Trip – Notification | 1 – nhiều |
+| OperationsStaff – AuditLog | 1 – nhiều |
+
+##### 9.4 Sơ đồ ERD (Mermaid)
+
+```mermaid
+erDiagram
+    ACCOUNT ||--|| CUSTOMER : has
+    ACCOUNT ||--|| DRIVER : has
+    ACCOUNT ||--|| OPERATIONS_STAFF : has
+    ROLE ||--o{ OPERATIONS_STAFF : assigned_to
+
+    DRIVER ||--o{ VEHICLE : owns
+    DRIVER ||--o{ DRIVER_LOCATION : reports
+
+    CUSTOMER ||--o{ TRIP : creates
+    DRIVER ||--o{ TRIP : fulfills
+    TRIP ||--o{ TRIP_STATUS_HISTORY : has
+
+    TRIP ||--|| PAYMENT : generates
+    CUSTOMER ||--o{ PAYMENT_METHOD : owns
+
+    TRIP ||--|| RATING : receives
+    CUSTOMER ||--o{ RATING : gives
+    DRIVER ||--o{ RATING : receives_many
+
+    TRIP ||--o{ NOTIFICATION : triggers
+    OPERATIONS_STAFF ||--o{ AUDIT_LOG : performs
+
+    ACCOUNT {
+        string account_id PK
+        string phone_or_email
+        string password_hash
+        string account_type
+        datetime created_at
+        string status
+    }
+
+    CUSTOMER {
+        string customer_id PK
+        string account_id FK
+        string full_name
+        string default_pickup_address
+    }
+
+    DRIVER {
+        string driver_id PK
+        string account_id FK
+        string full_name
+        string status
+        float average_rating
+    }
+
+    VEHICLE {
+        string vehicle_id PK
+        string driver_id FK
+        string vehicle_type
+        string license_plate
+        string brand_model
+        string status
+    }
+
+    OPERATIONS_STAFF {
+        string staff_id PK
+        string account_id FK
+        string full_name
+        string role_id FK
+    }
+
+    ROLE {
+        string role_id PK
+        string role_name
+    }
+
+    TRIP {
+        string trip_id PK
+        string customer_id FK
+        string driver_id FK
+        string vehicle_type_requested
+        string pickup_location
+        string dropoff_location
+        string current_status
+        datetime requested_at
+        datetime completed_at
+        float distance
+        int duration
+        float fare_amount
+    }
+
+    TRIP_STATUS_HISTORY {
+        string history_id PK
+        string trip_id FK
+        string status
+        datetime changed_at
+        string changed_by
+    }
+
+    DRIVER_LOCATION {
+        string location_id PK
+        string driver_id FK
+        float latitude
+        float longitude
+        datetime recorded_at
+    }
+
+    PAYMENT {
+        string payment_id PK
+        string trip_id FK
+        float amount
+        string payment_method_type
+        string status
+        string transaction_ref
+        datetime paid_at
+    }
+
+    PAYMENT_METHOD {
+        string payment_method_id PK
+        string customer_id FK
+        string method_type
+        string provider_token
+    }
+
+    NOTIFICATION {
+        string notification_id PK
+        string recipient_type
+        string recipient_id
+        string trip_id FK
+        string event_type
+        string content
+        datetime sent_at
+        string status
+    }
+
+    RATING {
+        string rating_id PK
+        string trip_id FK
+        string customer_id FK
+        string driver_id FK
+        int stars
+        string comment
+        datetime created_at
+    }
+
+    AUDIT_LOG {
+        string log_id PK
+        string staff_id FK
+        string action_type
+        string target_entity
+        string target_id
+        string action_detail
+        datetime created_at
+    }
+```
+
+##### 9.5 Ghi chú thiết kế
+
+- **Account** được tách riêng làm bảng xác thực chung (dùng chung logic đăng nhập/mật khẩu cho cả 3 loại người dùng), đúng với yêu cầu bảo mật BR17 (xác thực trước khi truy cập chức năng cần tài khoản).
+- **PaymentMethod.provider_token** chỉ lưu token tham chiếu từ nhà cung cấp thanh toán bên ngoài, tuân thủ đúng BR10 (không lưu thông tin thẻ nhạy cảm trực tiếp).
+- **DriverLocation** thiết kế dạng bảng ghi nhận liên tục (time-series) để phục vụ FR32 (theo dõi vị trí thời gian thực) — trong triển khai thực tế có thể cân nhắc dùng cơ sở dữ liệu chuyên biệt (vd: Redis, time-series DB) thay vì RDBMS thông thường để tối ưu hiệu năng, nhưng ở mức data model logic vẫn thể hiện như một entity.
+- **Trip.current_status** kết hợp với **TripStatusHistory** giúp vừa truy vấn nhanh trạng thái hiện tại, vừa lưu vết đầy đủ lịch sử thay đổi trạng thái (phục vụ audit và xử lý exception).
+- Quan hệ **Trip – Payment** và **Trip – Rating** là 1–1 vì mỗi chuyến chỉ có một giao dịch thanh toán chính thức và một đánh giá duy nhất (theo BR11, BR14).
+- Thời gian lưu trữ dữ liệu (data retention) của các bảng như DriverLocation, AuditLog, TripStatusHistory hiện **chưa được khách hàng chốt** — cần bổ sung vào danh sách Open Issues.
+
+
 
 
 
