@@ -52,16 +52,7 @@ Sau khi hiểu được Business Context, BA cần xác định **ai là ngườ
 | Nhà cung cấp thanh toán bên ngoài (Payment Provider) | Đối tác tích hợp xử lý giao dịch thanh toán điện tử |
 | Bộ phận bảo mật / Kiểm toán (Security/Audit) | Đảm bảo yêu cầu bảo mật, phân quyền, lưu vết thao tác được tuân thủ |
 
-Nguyên nhân phổ biến nhất khi quadrantChart không render trên GitHub là:
 
-Thiếu/sai code fence — phải có ```mermaid mở đầu và ``` đóng lại, đúng ba dấu backtick, không được có khoảng trắng thừa trước "mermaid".
-GitHub dùng phiên bản Mermaid cũ hơn — quadrantChart là loại diagram khá mới (từ Mermaid v10.5+), GitHub đôi khi chưa hỗ trợ đầy đủ loại này, kể cả khi cú pháp đúng 100%.
-
-Vì lý do #2 khá phổ biến, cách an toàn nhất là thay quadrantChart bằng một biểu đồ dạng flowchart/graph để mô phỏng ma trận 2x2 — loại này GitHub luôn hỗ trợ ổn định.
-
-Copy đoạn này thay cho đoạn quadrantChart cũ:
-
-markdown
 **Ma trận Stakeholders (Power/Interest Matrix)**
 
 Ma trận thể hiện mức độ **quyền lực/ảnh hưởng (Power)** và **mức độ quan tâm (Interest)** của từng stakeholder đối với dự án, giúp BA xác định ưu tiên giao tiếp:
