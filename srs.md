@@ -52,26 +52,50 @@ Sau khi hiểu được Business Context, BA cần xác định **ai là ngườ
 | Nhà cung cấp thanh toán bên ngoài (Payment Provider) | Đối tác tích hợp xử lý giao dịch thanh toán điện tử |
 | Bộ phận bảo mật / Kiểm toán (Security/Audit) | Đảm bảo yêu cầu bảo mật, phân quyền, lưu vết thao tác được tuân thủ |
 
+Nguyên nhân phổ biến nhất khi quadrantChart không render trên GitHub là:
+
+Thiếu/sai code fence — phải có ```mermaid mở đầu và ``` đóng lại, đúng ba dấu backtick, không được có khoảng trắng thừa trước "mermaid".
+GitHub dùng phiên bản Mermaid cũ hơn — quadrantChart là loại diagram khá mới (từ Mermaid v10.5+), GitHub đôi khi chưa hỗ trợ đầy đủ loại này, kể cả khi cú pháp đúng 100%.
+
+Vì lý do #2 khá phổ biến, cách an toàn nhất là thay quadrantChart bằng một biểu đồ dạng flowchart/graph để mô phỏng ma trận 2x2 — loại này GitHub luôn hỗ trợ ổn định.
+
+Copy đoạn này thay cho đoạn quadrantChart cũ:
+
+markdown
 **Ma trận Stakeholders (Power/Interest Matrix)**
 
 Ma trận thể hiện mức độ **quyền lực/ảnh hưởng (Power)** và **mức độ quan tâm (Interest)** của từng stakeholder đối với dự án, giúp BA xác định ưu tiên giao tiếp:
 
-quadrantChart
-    title Stakeholder Matrix - CAB System
-    x-axis Low Interest --> High Interest
-    y-axis Low Power --> High Power
-    quadrant-1 Quản lý chặt chẽ
-    quadrant-2 Giữ hài lòng
-    quadrant-3 Giám sát tối thiểu
-    quadrant-4 Giữ thông tin đầy đủ
-    Ban lanh dao: [0.85, 0.9]
-    Khach hang: [0.9, 0.4]
-    Tai xe: [0.75, 0.35]
-    Nhan vien van hanh: [0.6, 0.7]
-    BA: [0.9, 0.65]
-    Doi phat trien: [0.7, 0.55]
-    Nha cung cap thanh toan: [0.3, 0.6]
-    Bao mat Kiem toan: [0.4, 0.75]
+```mermaid
+flowchart TB
+    subgraph HP["High Power"]
+        direction LR
+        subgraph Q2["Giữ hài lòng (High Power - Low Interest)"]
+            NVVH["Nhân viên vận hành"]
+            BM["Bộ phận bảo mật/Kiểm toán"]
+        end
+        subgraph Q1["Quản lý chặt chẽ (High Power - High Interest)"]
+            BLD["Ban lãnh đạo"]
+            BA["Business Analyst"]
+        end
+    end
+    subgraph LP["Low Power"]
+        direction LR
+        subgraph Q3["Giám sát tối thiểu (Low Power - Low Interest)"]
+            NCC["Nhà cung cấp thanh toán"]
+        end
+        subgraph Q4["Giữ thông tin đầy đủ (Low Power - High Interest)"]
+            KH["Khách hàng"]
+            TX["Tài xế"]
+            DPT["Đội phát triển"]
+        end
+    end
+
+    style Q1 fill:#ffcccc,stroke:#333
+    style Q2 fill:#ffe0b3,stroke:#333
+    style Q3 fill:#e6e6e6,stroke:#333
+    style Q4 fill:#cce5ff,stroke:#333
+```
 
 **Diễn giải 4 nhóm trong ma trận:**
 
