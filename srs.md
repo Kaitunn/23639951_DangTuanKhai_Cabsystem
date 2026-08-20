@@ -263,7 +263,106 @@ Từ các Mục tiêu nghiệp vụ (Business Goals) đã xác định ở Bư�
 | BN29 | Kiến trúc mở rộng linh hoạt | Hệ thống có kiến trúc đủ linh hoạt để bổ sung loại dịch vụ mới, phương thức thanh toán mới, nhà cung cấp thông báo mới mà không cần xây lại toàn bộ ứng dụng |
 
 
+.......
 
+#### Bước 6: Xây dựng Business Process (Quy trình nghiệp vụ)
+
+Từ các Yêu cầu nghiệp vụ (BN) đã xác định ở Bước 5, BA xây dựng các quy trình nghiệp vụ (business process) mô tả từng bước xử lý, gắn với từng tác nhân liên quan trong hệ thống.
+
+##### 6.1 Quy trình Đặt chuyến & Tìm tài xế
+
+- Khách hàng tạo yêu cầu chuyến đi
+  + Xác nhận điểm đón
+  + Xác nhận điểm đến
+  + Chọn loại xe
+  + Gửi yêu cầu đặt xe
+- Hệ thống xác nhận yêu cầu và bắt đầu tìm tài xế
+  + Tìm tài xế phù hợp dựa trên vị trí và trạng thái sẵn sàng
+  + Nếu không có tài xế phù hợp → thông báo cho khách hàng và kết thúc quy trình
+  + Nếu có tài xế phù hợp → gửi thông báo mời chuyến đến tài xế
+- Tài xế phản hồi yêu cầu
+  + Tài xế chấp nhận chuyến → xác nhận tài xế cho chuyến, thông báo khách hàng (tài xế đã nhận + thời gian dự kiến đến)
+  + Tài xế từ chối hoặc không phản hồi trong thời gian quy định → hệ thống loại tài xế khỏi danh sách đề xuất và quay lại bước tìm tài xế khác
+  + Lặp lại cho đến khi có tài xế nhận chuyến hoặc hết danh sách tài xế phù hợp
+
+##### 6.2 Quy trình Thực hiện chuyến đi
+
+- Tài xế di chuyển đến điểm đón
+- Tài xế cập nhật trạng thái: đã đến điểm đón → hệ thống thông báo cho khách hàng
+- Kiểm tra khách hàng có mặt tại điểm đón
+  + Nếu không, quá thời gian chờ quy định → xử lý theo chính sách chờ/hủy (cần làm rõ với khách hàng)
+  + Nếu có → tài xế cập nhật trạng thái: đã đón khách
+- Tài xế cập nhật trạng thái: đang di chuyển
+- Hệ thống theo dõi và ghi nhận vị trí tài xế theo thời gian thực trong suốt chuyến đi
+- Tài xế đến điểm đến, cập nhật trạng thái: hoàn thành chuyến
+- Chuyển sang quy trình Tính cước & Thanh toán
+
+##### 6.3 Quy trình Tính cước & Thanh toán
+
+- Hệ thống tính cước dựa trên loại dịch vụ và thông tin chuyến đi sau khi chuyến hoàn thành
+- Hệ thống hiển thị số tiền phải trả cho khách hàng
+- Khách hàng chọn phương thức thanh toán
+  + Thanh toán tiền mặt:
+    - Khách hàng thanh toán trực tiếp cho tài xế
+    - Tài xế xác nhận đã nhận tiền
+    - Hệ thống ghi nhận: thanh toán thành công
+  + Thanh toán điện tử:
+    - Hệ thống gửi yêu cầu thanh toán đến nhà cung cấp thanh toán bên ngoài
+    - Nếu giao dịch thành công → ghi nhận: thanh toán thành công
+    - Nếu giao dịch thất bại → thông báo lỗi cho khách hàng, cho phép xử lý lại (thử thanh toán lại hoặc đổi phương thức)
+- Hệ thống thông báo kết quả thanh toán cho khách hàng
+- Chuyển sang quy trình Đánh giá tài xế
+
+##### 6.4 Quy trình Đánh giá tài xế
+
+- Sau khi thanh toán thành công, hệ thống mời khách hàng đánh giá tài xế
+- Khách hàng quyết định có đánh giá hay không
+  + Không đánh giá → kết thúc quy trình
+  + Có đánh giá → khách hàng chọn số sao/nhận xét
+- Hệ thống lưu đánh giá và cập nhật điểm đánh giá trung bình của tài xế
+- Dữ liệu đánh giá được đưa vào báo cáo hiệu quả hoạt động tài xế cho bộ phận vận hành
+
+##### 6.5 Quy trình Thông báo (xuyên suốt các quy trình khác)
+
+- Hệ thống phát sinh thông báo dựa theo từng sự kiện nghiệp vụ:
+  + Gửi cho khách hàng khi: yêu cầu đặt xe được tiếp nhận, tài xế nhận chuyến, tài xế đến điểm đón, chuyến hoàn thành, có kết quả thanh toán
+  + Gửi cho tài xế khi: có chuyến mới phù hợp, có thay đổi liên quan đến chuyến đang thực hiện
+- Hệ thống gửi thông báo qua kênh đã cấu hình (kiến trúc chừa sẵn khả năng bổ sung kênh thông báo mới trong tương lai)
+
+##### 6.6 Quy trình Quản trị & Vận hành (Nhân viên vận hành)
+
+- Nhân viên vận hành đăng nhập vào hệ thống quản trị
+- Xem danh sách các chuyến đang diễn ra, kiểm tra trạng thái tài xế
+- Khi phát hiện chuyến gặp sự cố:
+  + Kiểm tra chi tiết chuyến gặp sự cố
+  + Nếu thao tác xử lý thuộc nhóm nhạy cảm → chuyển yêu cầu đến nhân viên có quyền phù hợp (theo phân quyền)
+  + Nếu không → nhân viên xử lý trực tiếp (vd: hủy chuyến, hỗ trợ liên hệ khách hàng/tài xế)
+  + Hệ thống ghi log thao tác xử lý vào Audit Trail
+- Tra cứu lịch sử giao dịch khi cần
+- Xem báo cáo vận hành: số lượng chuyến, doanh thu, tỷ lệ hoàn thành/hủy, hiệu quả hoạt động tài xế
+
+##### 6.7 Quy trình Quản lý tài khoản & Hồ sơ (Khách hàng / Tài xế)
+
+- Khách hàng:
+  + Đăng ký tài khoản hoặc đăng nhập
+  + Cập nhật thông tin cá nhân khi cần
+- Tài xế:
+  + Đăng ký tài khoản, hoặc được nhân viên vận hành tạo tài khoản thay
+  + Cập nhật hồ sơ cá nhân, thông tin phương tiện
+  + Chuyển đổi trạng thái hoạt động: sẵn sàng nhận chuyến / không sẵn sàng
+  + Hệ thống ghi nhận và cập nhật vị trí tài xế liên tục khi ở trạng thái sẵn sàng, phục vụ cho quy trình tìm tài xế (6.1)
+
+##### 6.8 Bảng liên kết Business Process với Business Requirements
+
+| Business Process | Tác nhân chính | Business Requirements liên quan |
+|---|---|---|
+| 6.1 Đặt chuyến & Tìm tài xế | Khách hàng, Tài xế, Hệ thống | BN03, BN04, BN05, BN06 |
+| 6.2 Thực hiện chuyến đi | Tài xế, Hệ thống | BN07, BN08, BN09 |
+| 6.3 Tính cước & Thanh toán | Khách hàng, Tài xế, Hệ thống, Nhà cung cấp thanh toán | BN10, BN11, BN12, BN13 |
+| 6.4 Đánh giá tài xế | Khách hàng, Hệ thống | BN16, BN17 |
+| 6.5 Thông báo | Hệ thống | BN14, BN15 |
+| 6.6 Quản trị & Vận hành | Nhân viên vận hành, Hệ thống | BN18, BN19, BN20, BN21, BN23, BN25 |
+| 6.7 Quản lý tài khoản & Hồ sơ | Khách hàng, Tài xế | BN01, BN02 |
 
 
 
