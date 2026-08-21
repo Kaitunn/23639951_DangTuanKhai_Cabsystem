@@ -1703,6 +1703,92 @@ Acceptance Criteria là tập hợp các điều kiện và nguyên tắc cụ t
 | 13.8 (AC30–AC31) | BN22, BN23, BN24, BN25 | UC02, UC11, UC18 |
 
 
+#### Bước 14: Ma trận truy xuất yêu cầu (Requirement Traceability Matrix - RTM)
+
+RTM giúp truy vết một yêu cầu xuyên suốt vòng đời dự án: từ **mục tiêu nghiệp vụ (BG)** → **yêu cầu nghiệp vụ (BN)** → **yêu cầu chức năng (FR)** → **use case (UC)** → **tiêu chí chấp nhận (AC)** → **test case (TC)**. Nhờ đó, khi một yêu cầu thay đổi, đội dự án biết chính xác những phần thiết kế/kiểm thử nào bị ảnh hưởng; và khi một test case fail, có thể truy ngược lại đúng yêu cầu nghiệp vụ gốc.
+
+**Quy ước mã Test Case:** Mỗi AC tương ứng với ít nhất một TC cùng số thứ tự (vd: AC05 → TC05). Với các yêu cầu phi chức năng (NFR) không gắn AC cụ thể, TC được ký hiệu theo NFR (vd: TC-NFR03).
+
+##### 14.1 Bảng RTM chi tiết
+
+| BG | BN | FR | UC | AC | TC |
+|---|---|---|---|---|---|
+| — (nền tảng chung) | BN01 – Đăng ký & đăng nhập | FR01–FR03 | UC01, UC10 | AC01, AC02 | TC01, TC02 |
+| — (nền tảng chung) | BN02 – Quản lý hồ sơ | FR04–FR06 | UC03, UC12, UC13 | AC04 | TC04 |
+| BG01 | BN03 – Đặt chuyến xe | FR07–FR10 | UC04 | AC05 | TC05 |
+| BG01 | BN04 – Tự động tìm tài xế | FR11–FR19 | UC26, UC14 | AC06, AC07, AC08, AC09, AC11 | TC06, TC07, TC08, TC09, TC11 |
+| BG01 | BN05 – Thông báo không tìm được tài xế | FR20, FR21 | UC04, UC26 | AC10 | TC10 |
+| BG01 | BN06 – Nhận/từ chối chuyến (tài xế) | FR22–FR25 | UC14 | AC08, AC09, AC11 | TC08, TC09, TC11 |
+| BG03 | BN07 – Cập nhật trạng thái chuyến đi | FR26–FR29 | UC15 | AC12, AC13 | TC12, TC13 |
+| BG03 | BN08 – Theo dõi chuyến đi thời gian thực | FR30, FR31 | UC05 | AC14 | TC14 |
+| BG03 | BN09 – Cập nhật vị trí tài xế | FR32 | UC05 | AC14 | TC14 |
+| BG02 | BN10 – Tính cước chuyến đi | FR35, FR36 | UC27 | AC16 | TC16 |
+| BG02 | BN11 – Thanh toán tiền mặt | FR38, FR39 | UC07, UC16 | AC18 | TC18 |
+| BG02 | BN12 – Thanh toán điện tử | FR40, FR41, FR44 | UC07, UC30 | AC17, AC19, AC20 | TC17, TC19, TC20 |
+| BG02 | BN13 – Xử lý lỗi thanh toán | FR42, FR43 | UC30 | AC19, AC20 | TC19, TC20 |
+| BG04 | BN14 – Thông báo cho khách hàng | FR45–FR49 | UC09, UC28 | AC21, AC22 | TC21, TC22 |
+| BG04 | BN15 – Thông báo cho tài xế | FR50–FR52 | UC17, UC28 | AC21, AC22 | TC21, TC22 |
+| BG09 | BN16 – Đánh giá tài xế | FR53–FR56 | UC08 | AC23, AC24, AC25 | TC23, TC24, TC25 |
+| BG09 | BN17 – Xem lịch sử chuyến đi | FR33, FR34 | UC06 | AC15 | TC15 |
+| BG05 | BN18 – Quản trị khách hàng, tài xế, phương tiện, chuyến đi | FR58, FR59 | UC19, UC20 | AC26 | TC26 |
+| BG05 | BN19 – Giám sát chuyến đi & xử lý sự cố | FR60–FR63 | UC21, UC22 | AC27, AC28 | TC27, TC28 |
+| BG05 | BN20 – Phân quyền chức năng quản trị | FR64 | UC25 | AC26 | TC26 |
+| BG05 | BN21 – Báo cáo vận hành | FR65–FR68 | UC24 | AC29 | TC29 |
+| BG07 | BN22 – Xác thực người dùng | FR69 | UC02, UC11, UC18 | AC30 | TC30 |
+| BG07 | BN23 – Kiểm soát truy cập | FR70 | UC18, UC19, UC20 | AC26, AC30 | TC26, TC30 |
+| BG07 | BN24 – Bảo vệ dữ liệu | FR71 | — | AC31 | TC31 |
+| BG07 | BN25 – Lưu vết thao tác (Audit log) | FR72, FR73 | UC22, UC25, UC29 | AC28 | TC28 |
+| BG06 | BN26 – Khả năng mở rộng độc lập | FR74 | — | NFR03 | TC-NFR03 |
+| BG06 | BN27 – Cô lập lỗi giữa các module | FR75 | — | NFR05 | TC-NFR05 |
+| BG06 | BN28 – Triển khai từng phần | FR76 | — | NFR12 | TC-NFR12 |
+| BG08 | BN29 – Kiến trúc mở rộng linh hoạt | FR77 | — | NFR03, NFR15, NFR16 | TC-NFR03, TC-NFR15, TC-NFR16 |
+
+##### 14.2 Danh sách Test Case tương ứng (tóm tắt mục tiêu kiểm thử)
+
+| TC | Mục tiêu kiểm thử | AC/NFR liên quan |
+|---|---|---|
+| TC01 | Đăng ký tài khoản với thông tin hợp lệ → thành công | AC01 |
+| TC02 | Đăng ký với số điện thoại/email đã tồn tại → bị từ chối | AC02 |
+| TC04 | Chuyển trạng thái sẵn sàng khi hồ sơ/phương tiện chưa đầy đủ → bị chặn | AC04 |
+| TC05 | Tạo yêu cầu đặt xe với đầy đủ thông tin → tạo Trip thành công | AC05 |
+| TC06 | Tìm tài xế → chỉ tài xế "sẵn sàng" được đề xuất | AC06 |
+| TC07 | Tìm tài xế khi có tài xế đang bận (on_trip) → không được đề xuất | AC07 |
+| TC08 | Tài xế từ chối chuyến → hệ thống mời tài xế kế tiếp ngay | AC08 |
+| TC09 | Tài xế không phản hồi quá thời gian quy định → tự động chuyển tài xế khác | AC09 |
+| TC10 | Hết danh sách tài xế phù hợp → thông báo không tìm được tài xế | AC10 |
+| TC11 | Hai tài xế cùng chấp nhận 1 chuyến (race condition) → chỉ 1 tài xế được xác nhận | AC11 |
+| TC12 | Cập nhật trạng thái chuyến sai thứ tự → bị từ chối | AC12 |
+| TC13 | Tài xế cập nhật "đã đến điểm đón" → khách hàng nhận thông báo ngay | AC13 |
+| TC14 | Theo dõi vị trí tài xế trong chuyến → cập nhật liên tục trên màn hình khách hàng | AC14 |
+| TC15 | Xem lịch sử chuyến đi → hiển thị đầy đủ và chính xác | AC15 |
+| TC16 | Tính cước chỉ được thực hiện sau khi Trip.status = completed | AC16 |
+| TC17 | Thanh toán điện tử thành công → không lưu thông tin thẻ nhạy cảm | AC17 |
+| TC18 | Một chuyến chỉ có một giao dịch thanh toán thành công (không trùng) | AC18 |
+| TC19 | Giao dịch điện tử thất bại → thông báo lỗi, cho thử lại | AC19 |
+| TC20 | Payment Gateway timeout → hiển thị lỗi tạm thời, gợi ý đổi phương thức | AC20 |
+| TC21 | Sự kiện nghiệp vụ hợp lệ → gửi đúng và đủ 1 thông báo, không trùng lặp | AC21 |
+| TC22 | Gửi thông báo thất bại → hệ thống tự động retry theo giới hạn | AC22 |
+| TC23 | Mời đánh giá chỉ hiển thị sau khi thanh toán thành công | AC23 |
+| TC24 | Gửi đánh giá lần 2 cho cùng 1 chuyến → bị từ chối | AC24 |
+| TC25 | Gửi đánh giá hợp lệ → điểm trung bình tài xế được cập nhật ngay | AC25 |
+| TC26 | Nhân viên không đủ quyền thực hiện thao tác nhạy cảm → bị chặn | AC26 |
+| TC27 | Màn hình giám sát hiển thị đúng danh sách chuyến đang diễn ra | AC27 |
+| TC28 | Xử lý sự cố chuyến đi → thao tác được ghi đầy đủ vào Audit Log | AC28 |
+| TC29 | Tạo báo cáo vận hành theo khoảng thời gian → số liệu khớp dữ liệu thực tế | AC29 |
+| TC30 | Truy cập chức năng cần tài khoản khi chưa đăng nhập/token hết hạn → bị chặn | AC30 |
+| TC31 | Kiểm tra dữ liệu cá nhân/vị trí/giao dịch được mã hóa khi lưu trữ và truyền tải | AC31 |
+| TC-NFR03 | Kiểm thử khả năng scale độc lập của từng module khi tăng tải | NFR03 |
+| TC-NFR05 | Giả lập lỗi ở module Thanh toán/Thông báo → xác nhận module Đặt xe vẫn hoạt động | NFR05 |
+| TC-NFR12 | Triển khai một thay đổi nhỏ ở 1 module → không ảnh hưởng module khác | NFR12 |
+| TC-NFR15 | Kiểm thử tích hợp với nhà cung cấp thanh toán qua API chuẩn | NFR15 |
+| TC-NFR16 | Kiểm thử khả năng bổ sung nhà cung cấp/kênh mới mà không sửa code lõi | NFR16 |
+
+##### 14.3 Ý nghĩa sử dụng RTM
+
+- **Đảm bảo không sót yêu cầu:** Mọi BG đều có ít nhất một BN, mọi BN đều có FR/UC/AC/TC tương ứng — nếu một dòng bị trống ở cột nào đó, đó là dấu hiệu cần bổ sung thiết kế hoặc kiểm thử.
+- **Đánh giá tác động khi thay đổi (Impact Analysis):** Khi khách hàng yêu cầu thay đổi một BG hoặc BN, BA/dev tra bảng RTM để biết chính xác những FR, UC, AC, TC nào cần rà soát lại.
+- **Theo dõi tiến độ nghiệm thu:** Đội QA dùng cột TC để lập kế hoạch test; khi toàn bộ TC của một BN pass, BN đó được coi là hoàn thành và có thể nghiệm thu với khách hàng.
+- **Chuẩn bị UAT (User Acceptance Test):** Khách hàng có thể dùng trực tiếp cột AC để xác nhận tiêu chí nghiệm thu trước khi dự án bàn giao.
 
 
   
