@@ -146,34 +146,36 @@ flowchart TB
 
 
 
-#### Bước 3: Xác định Mục tiêu nghiệp vụ (Business Goals)
+# GIAI ĐOẠN 1 (tiếp theo): XÁC ĐỊNH MỤC TIÊU NGHIỆP VỤ (BUSINESS GOALS)
 
-Từ Business Context và Business Purpose đã phân tích ở Bước 1, BA xác định các mục tiêu nghiệp vụ cụ thể mà hệ thống CAB cần đạt được:
+## Danh sách Business Goals
 
-| Mã | Mục tiêu nghiệp vụ (Business Goal) |
-|---|---|
-| BG01 | Tự động tìm và phân công tài xế phù hợp cho khách hàng |
-| BG02 | Hỗ trợ thanh toán (cho phép thanh toán tiền mặt và thanh toán điện tử) |
-| BG03 | Cung cấp khả năng theo dõi chuyến đi theo thời gian thực cho khách hàng |
-| BG04 | Gửi thông báo tự động cho khách hàng và tài xế xuyên suốt vòng đời chuyến đi |
-| BG05 | Cung cấp công cụ quản trị và báo cáo cho nhân viên vận hành |
-| BG06 | Đảm bảo hệ thống có khả năng mở rộng (scalable) và hoạt động ổn định khi tải tăng cao |
-| BG07 | Bảo vệ dữ liệu và kiểm soát truy cập theo đúng yêu cầu bảo mật |
-| BG08 | Xây dựng kiến trúc linh hoạt, dễ mở rộng để bổ sung dịch vụ, phương thức thanh toán, kênh thông báo mới trong tương lai |
-| BG09 | Nâng cao chất lượng dịch vụ thông qua cơ chế đánh giá tài xế sau chuyến đi |
+| Mã | Mục tiêu nghiệp vụ | Mô tả |
+|---|---|---|
+| BG01 | Tự động tìm và phân công tài xế | Hệ thống tự động xác định và đề xuất tài xế phù hợp dựa trên vị trí, trạng thái sẵn sàng và tiêu chí vận hành, có cơ chế tìm tài xế khác khi tài xế được đề xuất không phản hồi hoặc từ chối |
+| BG02 | Hỗ trợ thanh toán đa phương thức | Cho phép khách hàng thanh toán bằng tiền mặt hoặc thanh toán điện tử thông qua nhà cung cấp thanh toán bên ngoài, không lưu trữ trực tiếp thông tin nhạy cảm của thẻ/tài khoản trong hệ thống CAB |
+| BG03 | Theo dõi chuyến đi theo thời gian thực | Cho phép khách hàng và tài xế theo dõi, cập nhật trạng thái chuyến đi xuyên suốt từ khi tạo yêu cầu đến khi hoàn thành |
+| BG04 | Tập trung hóa quản trị vận hành | Cung cấp giao diện quản trị cho nhân viên vận hành để quản lý khách hàng, tài xế, phương tiện, chuyến đi và xử lý các trường hợp chuyến bị lỗi |
+| BG05 | Cung cấp hệ thống thông báo đa kênh | Gửi thông báo tới khách hàng và tài xế tại các mốc quan trọng của chuyến đi (tiếp nhận yêu cầu, tài xế nhận chuyến, tài xế đến điểm đón, hoàn thành chuyến, kết quả thanh toán), có khả năng mở rộng thêm kênh trong tương lai |
+| BG06 | Cung cấp báo cáo và thống kê vận hành | Cung cấp cho ban lãnh đạo báo cáo về số lượng chuyến, doanh thu, tỷ lệ chuyến hoàn thành, tỷ lệ hủy và hiệu quả hoạt động của tài xế |
+| BG07 | Đảm bảo khả năng mở rộng và ổn định hệ thống | Xây dựng kiến trúc cho phép các thành phần mở rộng độc lập, hạn chế ảnh hưởng dây chuyền khi một chức năng gặp lỗi, và cho phép triển khai tính năng mới từng phần |
+| BG08 | Đảm bảo an toàn và bảo mật thông tin | Xác thực người dùng trước khi sử dụng chức năng yêu cầu tài khoản, kiểm soát quyền truy cập với thao tác quản trị, bảo vệ dữ liệu cá nhân/phương tiện/vị trí/giao dịch, và lưu vết các thao tác quan trọng |
 
-**Diễn giải chi tiết:**
+## Sơ đồ liên kết Business Goals
 
-- **BG01 – Tự động tìm tài xế:** Khi khách hàng tạo chuyến, hệ thống tự động xác định tài xế phù hợp dựa trên vị trí, trạng thái sẵn sàng và tiêu chí vận hành, có cơ chế tìm tài xế khác nếu tài xế đầu tiên không phản hồi/từ chối, không yêu cầu khách hàng tạo lại yêu cầu.
-- **BG02 – Hỗ trợ thanh toán:** Cho phép thanh toán tiền mặt và thanh toán điện tử qua nhà cung cấp thanh toán bên ngoài, không lưu trực tiếp thông tin nhạy cảm của thẻ/tài khoản trong hệ thống CAB, có cơ chế xử lý khi giao dịch điện tử thất bại.
-- **BG03 – Theo dõi chuyến đi thời gian thực:** Khách hàng biết được trạng thái tìm tài xế, tài xế nhận chuyến, thời gian dự kiến đến và trạng thái hiện tại của chuyến đi.
-- **BG04 – Thông báo:** Khách hàng nhận thông báo khi yêu cầu được tiếp nhận, tài xế nhận chuyến, tài xế đến điểm đón, chuyến hoàn thành, kết quả thanh toán; tài xế nhận thông báo về chuyến mới hoặc thay đổi liên quan.
-- **BG05 – Công cụ quản trị & báo cáo:** Nhân viên vận hành quản lý khách hàng, tài xế, phương tiện, chuyến đi; xem báo cáo số lượng chuyến, doanh thu, tỷ lệ hoàn thành/hủy, hiệu quả hoạt động tài xế.
-- **BG06 – Khả năng mở rộng & ổn định:** Các thành phần hệ thống scale độc lập khi tải tăng; lỗi ở một chức năng (thanh toán, thông báo) không làm sập toàn bộ hệ thống.
-- **BG07 – Bảo mật:** Xác thực khách hàng/tài xế trước khi dùng chức năng yêu cầu tài khoản, kiểm soát quyền truy cập cho thao tác quản trị, bảo vệ dữ liệu cá nhân/vị trí/giao dịch, lưu vết (audit log) các thao tác quan trọng.
-- **BG08 – Kiến trúc linh hoạt:** Cho phép bổ sung loại dịch vụ mới, phương thức thanh toán mới, nhà cung cấp thông báo mới hoặc thay đổi thành phần kỹ thuật mà không cần xây lại toàn bộ ứng dụng.
-- **BG09 – Đánh giá tài xế:** Sau khi hoàn thành chuyến, khách hàng có thể đánh giá tài xế; dữ liệu đánh giá được dùng để cải thiện chất lượng dịch vụ và làm tiêu chí tham khảo trong hoạt động vận hành (ví dụ: theo dõi hiệu quả tài xế trong báo cáo — liên quan BG05).
+```mermaid
+flowchart LR
+    Goal["Muc tieu tong the: Xay dung nen tang CAB co the phat trien lau dai"]
 
+    Goal --> BG01["BG01: Tu dong tim va phan cong tai xe"]
+    Goal --> BG02["BG02: Ho tro thanh toan da phuong thuc"]
+    Goal --> BG03["BG03: Theo doi chuyen di theo thoi gian thuc"]
+    Goal --> BG04["BG04: Tap trung hoa quan tri van hanh"]
+    Goal --> BG05["BG05: He thong thong bao da kenh"]
+    Goal --> BG06["BG06: Bao cao va thong ke van hanh"]
+    Goal --> BG07["BG07: Kha nang mo rong va on dinh he thong"]
+    Goal --> BG08["BG08: An toan va bao mat thong tin"]
+```
 
 
 #### Bước 4: Xác định Phạm vi dự án (Scope)
