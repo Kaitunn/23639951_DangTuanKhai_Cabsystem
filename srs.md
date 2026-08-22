@@ -178,254 +178,202 @@ flowchart LR
 ```
 
 
-#### Bước 4: Xác định Phạm vi dự án (Scope)
+# GIAI ĐOẠN 1 (tiếp theo): B4 - XÁC ĐỊNH PHẠM VI DỰ ÁN (SCOPE)
 
-Với thời gian triển khai này , BA cần xác định rõ phạm vi để đội phát triển tập trung xây dựng **MVB** — đáp ứng đúng luồng nghiệp vụ cốt lõi mà khách hàng mô tả, đồng thời loại trừ các phần có thể mở rộng sau để tránh trễ tiến độ.
+## 1. Trong phạm vi (In-Scope) - Các module cơ bản cho MVB (7 tuần)
 
-##### 4.1 Trong phạm vi (In-Scope)
+| STT | Module | Nội dung |
+|---|---|---|
+| 1 | Quản lý tài khoản khách hàng | Đăng ký, đăng nhập, cập nhật thông tin cá nhân |
+| 2 | Quản lý tài khoản tài xế | Đăng ký hoặc được vận hành tạo tài khoản, cập nhật hồ sơ, phương tiện, trạng thái hoạt động |
+| 3 | Đặt chuyến xe | Nhập điểm đón, điểm đến, chọn loại xe, gửi yêu cầu đặt xe |
+| 4 | Tìm và phân công tài xế | Xác định tài xế phù hợp theo vị trí và trạng thái sẵn sàng; xử lý khi tài xế từ chối/không phản hồi |
+| 5 | Theo dõi trạng thái chuyến đi | Cập nhật trạng thái theo thời gian thực cho khách hàng và tài xế |
+| 6 | Tính cước và thanh toán | Tính số tiền phải trả; thanh toán tiền mặt và điện tử qua cổng thanh toán ngoài |
+| 7 | Thông báo | Thông báo cho khách hàng và tài xế tại các mốc quan trọng của chuyến đi |
+| 8 | Lịch sử chuyến đi và đánh giá | Xem lịch sử chuyến, số tiền đã thanh toán, đánh giá tài xế sau chuyến |
+| 9 | Giao diện quản trị vận hành | Quản lý khách hàng, tài xế, phương tiện, chuyến đi |
+| 10 | Phân quyền quản trị | Giới hạn thao tác nhạy cảm chỉ dành cho nhân viên được cấp quyền |
+| 11 | Báo cáo vận hành | Số lượng chuyến, doanh thu, tỷ lệ hoàn thành, tỷ lệ hủy, hiệu quả tài xế |
+| 12 | Xác thực và bảo mật cơ bản | Xác thực người dùng, kiểm soát truy cập, lưu vết thao tác quan trọng |
 
-**Module Khách hàng (Customer)**
-- Đăng ký tài khoản, đăng nhập, cập nhật thông tin cá nhân
-- Nhập điểm đón/điểm đến, chọn loại xe, gửi yêu cầu đặt xe
-- Theo dõi trạng thái chuyến đi (đang tìm tài xế, tài xế đã nhận, thời gian dự kiến đến, trạng thái hiện tại)
-- Xem lịch sử chuyến đi, số tiền phải trả
-- Đánh giá tài xế sau khi hoàn thành chuyến
+## 2. Ngoài phạm vi (Out-of-Scope) đề xuất cho MVB - cần xác nhận với khách hàng
 
-**Module Tài xế (Driver)**
-- Đăng ký hoặc được nhân viên vận hành tạo tài khoản
-- Cập nhật hồ sơ, thông tin phương tiện, trạng thái hoạt động (sẵn sàng/không sẵn sàng)
-- Nhận thông báo yêu cầu chuyến phù hợp, chấp nhận/từ chối chuyến
-- Cập nhật trạng thái chuyến: đã đến điểm đón, đã đón khách, đang di chuyển, hoàn thành
-- Cập nhật vị trí để phục vụ tìm tài xế gần khách hàng
+> Lưu ý: Tài liệu gốc của khách hàng chưa nêu rõ các mục loại trừ. Danh sách dưới đây là đề xuất của BA dựa trên ràng buộc thời gian 7 tuần, cần được xác nhận lại với khách hàng trước khi chốt phạm vi chính thức.
 
-**Module Tìm & Phân công tài xế (Driver Matching)**
-- Xác định tài xế phù hợp dựa trên vị trí, trạng thái sẵn sàng
-- Cơ chế tìm tài xế thay thế khi tài xế được đề xuất không phản hồi/từ chối
-- Thông báo cho khách hàng khi không tìm được tài xế
+| STT | Hạng mục | Lý do đề xuất loại trừ khỏi MVB |
+|---|---|---|
+| 1 | Đặt xe hộ người khác, đặt xe đặt trước (lịch trong tương lai) | Không được đề cập trong yêu cầu gốc; tăng độ phức tạp nghiệp vụ |
+| 2 | Chat trực tiếp giữa khách hàng và tài xế | Không được đề cập; thuộc nhóm tính năng mở rộng sau MVB |
+| 3 | Chương trình khuyến mãi, mã giảm giá, tích điểm | Không được đề cập trong yêu cầu gốc |
+| 4 | Đa dạng nhiều cổng/ví thanh toán cùng lúc | Yêu cầu gốc chỉ đề cập tích hợp với một nhà cung cấp thanh toán bên ngoài |
+| 5 | Dashboard báo cáo nâng cao, phân tích chuyên sâu (BI) | Yêu cầu gốc chỉ đề cập các chỉ số báo cáo cơ bản |
+| 6 | Đa kênh thông báo đầy đủ ngay từ đầu (chỉ triển khai một kênh cơ bản, kiến trúc chừa chỗ mở rộng) | Yêu cầu gốc nêu rõ "mở rộng thêm kênh thông báo trong tương lai", ngụ ý MVB chỉ cần một kênh |
+| 7 | Quản lý đội xe nâng cao (fleet management, nhiều phương tiện/tài xế) | Không được đề cập trong yêu cầu gốc |
+| 8 | Đa ngôn ngữ, đa khu vực tiền tệ | Không được đề cập trong yêu cầu gốc |
 
-**Module Tính cước & Thanh toán (Fare & Payment)**
-- Tính số tiền khách hàng phải trả dựa trên loại dịch vụ và thông tin chuyến đi
-- Thanh toán tiền mặt
-- Thanh toán điện tử (tích hợp với 1 nhà cung cấp thanh toán bên ngoài, không lưu thông tin thẻ nhạy cảm trong hệ thống CAB)
-- Thông báo và cho phép xử lý lại khi giao dịch điện tử thất bại
+---
 
-**Module Thông báo (Notification)**
-- Thông báo cho khách hàng: yêu cầu được tiếp nhận, tài xế nhận chuyến, tài xế đến điểm đón, chuyến hoàn thành, kết quả thanh toán
-- Thông báo cho tài xế: chuyến mới, thay đổi liên quan đến chuyến đang thực hiện
-- Kiến trúc cho phép mở rộng thêm kênh thông báo sau này (chỉ cần thiết kế sẵn, chưa cần triển khai nhiều kênh trong 7 tuần)
-
-**Module Quản trị vận hành (Admin/Operations)**
-- Quản lý khách hàng, tài xế, phương tiện, chuyến đi
-- Xem các chuyến đang diễn ra, kiểm tra trạng thái tài xế
-- Hỗ trợ xử lý chuyến bị lỗi, tra cứu lịch sử giao dịch
-- Phân quyền cơ bản (nhân viên thường vs. thao tác nhạy cảm)
-- Báo cáo cơ bản: số lượng chuyến, doanh thu, tỷ lệ hoàn thành/hủy, hiệu quả tài xế
-
-**Yêu cầu phi chức năng (Non-Functional)**
-- Xác thực người dùng (khách hàng, tài xế) trước khi dùng chức năng cần tài khoản
-- Kiểm soát quyền truy cập cho thao tác quản trị
-- Lưu vết (audit log) các thao tác quan trọng
-- Kiến trúc cho phép các thành phần scale độc lập, cô lập lỗi (một module lỗi không kéo sập toàn hệ thống)
-
-##### 4.2 Ngoài phạm vi (Out-of-Scope)
-
-> Các mục dưới đây **không nên triển khai trong giai đoạn này**, do chưa được khách hàng chốt chi tiết hoặc không phải yêu cầu cốt lõi của MVB. BA cần ghi nhận và xác nhận lại với khách hàng để đưa vào roadmap giai đoạn sau.
-
-- Tích hợp **nhiều** nhà cung cấp thanh toán cùng lúc (chỉ tích hợp 1 nhà cung cấp trong phạm vi MVB)
-- Tích hợp **nhiều kênh thông báo** (SMS, email, push, in-app...) — chỉ cần 1 kênh chính, kiến trúc chừa sẵn khả năng mở rộng
-- Tính năng khuyến mãi, mã giảm giá, chương trình khách hàng thân thiết
-- Đặt xe hộ người khác, đặt xe theo lịch (đặt trước)
-- Chat trực tiếp giữa khách hàng và tài xế trong ứng dụng
-- Bản đồ nội bộ tự phát triển (dự kiến dùng dịch vụ bản đồ bên thứ ba có sẵn, không tự xây engine định vị/routing)
-- Ứng dụng dành riêng cho nhiều ngôn ngữ/đa quốc gia (chỉ 1 ngôn ngữ/thị trường ban đầu)
-- Chính sách hủy chuyến chi tiết, biểu phí phạt hủy (chưa được khách hàng chốt — cần làm rõ trước, xem mục Open Issues)
-- Cách tính cước nâng cao (giờ cao điểm, surge pricing, khuyến mãi theo khu vực) — chỉ áp dụng công thức tính cước cơ bản trong MVB
-- Xử lý chi tiết khi mất kết nối mạng (offline mode) — chưa được chốt, cần làm rõ
-- Chính sách và thời gian lưu trữ dữ liệu dài hạn (data retention/archiving) — chưa được chốt, cần làm rõ
-- Ứng dụng di động native (iOS/Android) đầy đủ — trong 7 tuần ưu tiên nền tảng chính (web hoặc 1 nền tảng di động), việc phát triển đa nền tảng đầy đủ để giai đoạn sau
-- Tính năng phân tích nâng cao / AI dự đoán nhu cầu, tối ưu tuyến đường
-
-
-
-#### Bước 5: Chuyển đổi thành Yêu cầu nghiệp vụ (Business Requirements)
-
-Từ các Mục tiêu nghiệp vụ (Business Goals) đã xác định ở Bước 3, BA cụ thể hóa thành các **Yêu cầu nghiệp vụ (Business Requirements)** — mô tả những việc hệ thống phải làm được để đạt mục tiêu đề ra. Mỗi yêu cầu được ký hiệu bằng mã **BN**, được nhóm theo từng khối chức năng để dễ theo dõi.
-
-##### Nhóm 1: Tài khoản & Hồ sơ người dùng
+# B5 - CHUYỂN ĐỔI THÀNH YÊU CẦU NGHIỆP VỤ (BUSINESS REQUIREMENTS)
 
 | Mã | Tên yêu cầu | Diễn giải |
 |---|---|---|
-| BN01 | Đăng ký & đăng nhập tài khoản | Khách hàng và tài xế có thể đăng ký tài khoản mới, đăng nhập vào hệ thống; tài xế có thể được nhân viên vận hành tạo tài khoản thay |
-| BN02 | Quản lý thông tin cá nhân & hồ sơ | Khách hàng cập nhật thông tin cá nhân; tài xế cập nhật hồ sơ, thông tin phương tiện và trạng thái hoạt động |
+| BR01 | Đăng ký / Đăng nhập khách hàng | Khách hàng có thể tạo tài khoản và đăng nhập vào hệ thống để sử dụng dịch vụ |
+| BR02 | Cập nhật thông tin cá nhân khách hàng | Khách hàng có thể chỉnh sửa thông tin hồ sơ cá nhân của mình |
+| BR03 | Đặt chuyến xe | Khách hàng nhập điểm đón, điểm đến, chọn loại xe và gửi yêu cầu đặt xe |
+| BR04 | Theo dõi trạng thái chuyến đi | Khách hàng xem được trạng thái hiện tại của chuyến (đang tìm tài xế, tài xế đã nhận, thời gian dự kiến đến, v.v.) |
+| BR05 | Xem lịch sử chuyến đi | Khách hàng tra cứu các chuyến đã thực hiện và số tiền đã thanh toán |
+| BR06 | Đánh giá tài xế | Khách hàng đánh giá tài xế sau khi hoàn thành chuyến |
+| BR07 | Đăng ký / Tạo tài khoản tài xế | Tài xế tự đăng ký hoặc được nhân viên vận hành tạo tài khoản |
+| BR08 | Cập nhật hồ sơ và phương tiện của tài xế | Tài xế cập nhật thông tin cá nhân, thông tin phương tiện, trạng thái hoạt động |
+| BR09 | Chuyển trạng thái sẵn sàng nhận chuyến | Tài xế chuyển đổi giữa trạng thái sẵn sàng và không sẵn sàng nhận chuyến |
+| BR10 | Nhận và phản hồi thông báo chuyến mới | Tài xế nhận thông báo khi có chuyến phù hợp và có thể chấp nhận hoặc từ chối |
+| BR11 | Cập nhật trạng thái thực hiện chuyến | Tài xế cập nhật các mốc: đã đến điểm đón, đã đón khách, đang di chuyển, hoàn thành chuyến |
+| BR12 | Ghi nhận vị trí tài xế | Hệ thống lưu vị trí tài xế để hỗ trợ tìm tài xế gần khách hàng và dự kiến thời gian đến |
+| BR13 | Tìm và phân công tài xế tự động | Hệ thống xác định tài xế phù hợp dựa trên vị trí, trạng thái sẵn sàng; tự động tìm tài xế khác nếu tài xế trước không phản hồi/từ chối |
+| BR14 | Tính cước chuyến đi | Hệ thống xác định số tiền khách hàng phải trả dựa trên loại dịch vụ và thông tin chuyến đi |
+| BR15 | Thanh toán bằng tiền mặt | Khách hàng có thể thanh toán trực tiếp bằng tiền mặt cho tài xế |
+| BR16 | Thanh toán điện tử | Khách hàng thanh toán qua nhà cung cấp thanh toán bên ngoài, không lưu thông tin nhạy cảm trong hệ thống CAB |
+| BR17 | Xử lý thanh toán thất bại | Hệ thống thông báo cho khách hàng và cho phép xử lý lại khi giao dịch điện tử thất bại |
+| BR18 | Thông báo cho khách hàng | Gửi thông báo tại các mốc: tiếp nhận yêu cầu, tài xế nhận chuyến, tài xế đến điểm đón, hoàn thành chuyến, kết quả thanh toán |
+| BR19 | Thông báo cho tài xế | Gửi thông báo về chuyến mới hoặc thay đổi liên quan đến chuyến đang thực hiện |
+| BR20 | Quản lý dữ liệu vận hành | Nhân viên vận hành quản lý khách hàng, tài xế, phương tiện, chuyến đi qua giao diện quản trị |
+| BR21 | Phân quyền chức năng quản trị | Giới hạn các thao tác nhạy cảm chỉ cho nhân viên được cấp quyền phù hợp |
+| BR22 | Báo cáo vận hành | Cung cấp báo cáo số lượng chuyến, doanh thu, tỷ lệ hoàn thành, tỷ lệ hủy, hiệu quả tài xế cho ban lãnh đạo |
+| BR23 | Xác thực người dùng | Khách hàng và tài xế phải được xác thực trước khi sử dụng các chức năng yêu cầu tài khoản |
+| BR24 | Lưu vết thao tác quan trọng | Hệ thống ghi log các thao tác quan trọng phục vụ kiểm tra khi có sự cố |
 
-##### Nhóm 2: Đặt xe & Tìm tài xế
+---
 
-| Mã | Tên yêu cầu | Diễn giải |
-|---|---|---|
-| BN03 | Đặt chuyến xe | Khách hàng nhập điểm đón, điểm đến, chọn loại xe và gửi yêu cầu đặt xe |
-| BN04 | Tự động tìm tài xế | Hệ thống xác định tài xế phù hợp dựa trên vị trí, trạng thái sẵn sàng và tiêu chí vận hành; tự động tìm tài xế khác nếu tài xế đầu tiên không phản hồi/từ chối |
-| BN05 | Thông báo khi không tìm được tài xế | Hệ thống thông báo rõ ràng cho khách hàng trong trường hợp không tìm được tài xế phù hợp |
-| BN06 | Nhận/từ chối chuyến (tài xế) | Tài xế nhận thông báo yêu cầu chuyến phù hợp và có thể chấp nhận hoặc từ chối |
+# B6 - XÂY DỰNG QUY TRÌNH NGHIỆP VỤ (BUSINESS PROCESS)
 
-##### Nhóm 3: Thực hiện chuyến đi
+## Quy trình 1: Đặt chuyến và tìm tài xế (Booking & Driver Matching)
 
-| Mã | Tên yêu cầu | Diễn giải |
-|---|---|---|
-| BN07 | Cập nhật trạng thái chuyến đi | Tài xế cập nhật các trạng thái: đã đến điểm đón, đã đón khách, đang di chuyển, hoàn thành chuyến |
-| BN08 | Theo dõi chuyến đi theo thời gian thực | Khách hàng theo dõi được trạng thái tìm tài xế, tài xế đã nhận chuyến, thời gian dự kiến đến và trạng thái hiện tại của chuyến |
-| BN09 | Cập nhật vị trí tài xế | Hệ thống lưu và cập nhật vị trí tài xế để hỗ trợ tìm tài xế gần khách hàng và dự đoán thời gian đến |
-| BN17 | Xem lịch sử chuyến đi | Khách hàng xem được lịch sử các chuyến đã thực hiện và số tiền đã trả |
+**Các bước:**
+1. Khách hàng tạo yêu cầu chuyến đi
+2. Khách hàng xác nhận điểm đón
+3. Khách hàng xác nhận điểm đến và loại xe
+4. Hệ thống tiếp nhận và xác nhận yêu cầu
+5. Hệ thống tìm tài xế phù hợp (theo vị trí, trạng thái sẵn sàng, tiêu chí vận hành)
+6. Hệ thống gửi thông báo chuyến cho tài xế được đề xuất
+7. Tài xế chấp nhận hoặc từ chối/không phản hồi
+8. Nếu chấp nhận: xác nhận phân công, thông báo cho khách hàng
+9. Nếu từ chối/không phản hồi: hệ thống tự động tìm tài xế khác (không yêu cầu khách hàng tạo lại yêu cầu)
+10. Nếu không tìm được tài xế sau các lần thử: thông báo rõ ràng cho khách hàng
 
-##### Nhóm 4: Tính cước & Thanh toán
+```mermaid
+flowchart TD
+    A[Khach hang tao yeu cau chuyen di] --> B[Xac nhan diem don]
+    B --> C[Xac nhan diem den va loai xe]
+    C --> D[He thong tiep nhan yeu cau]
+    D --> E[He thong tim tai xe phu hop]
+    E --> F{Co tai xe phu hop khong?}
+    F -->|Khong| G[Thong bao khach hang khong tim duoc tai xe]
+    F -->|Co| H[Gui thong bao chuyen cho tai xe]
+    H --> I{Tai xe phan hoi?}
+    I -->|Tu choi hoac khong phan hoi| E
+    I -->|Chap nhan| J[Xac nhan phan cong tai xe]
+    J --> K[Thong bao khach hang: tai xe da nhan chuyen]
+    K --> L[Ket thuc quy trinh dat chuyen]
+    G --> L
+```
 
-| Mã | Tên yêu cầu | Diễn giải |
-|---|---|---|
-| BN10 | Tính cước chuyến đi | Hệ thống xác định số tiền khách hàng phải trả dựa trên loại dịch vụ và thông tin chuyến đi sau khi hoàn thành |
-| BN11 | Thanh toán tiền mặt | Khách hàng có thể thanh toán chuyến đi bằng tiền mặt |
-| BN12 | Thanh toán điện tử | Khách hàng có thể thanh toán qua phương thức điện tử, tích hợp với nhà cung cấp thanh toán bên ngoài, không lưu thông tin nhạy cảm trong hệ thống CAB |
-| BN13 | Xử lý lỗi thanh toán | Hệ thống thông báo cho khách hàng và cho phép xử lý lại khi giao dịch thanh toán điện tử thất bại |
+## Quy trình 2: Thực hiện chuyến đi (Trip Execution)
 
-##### Nhóm 5: Thông báo
+**Các bước:**
+1. Tài xế đã được phân công di chuyển đến điểm đón
+2. Tài xế cập nhật trạng thái "đã đến điểm đón"
+3. Tài xế đón khách, cập nhật trạng thái "đã đón khách"
+4. Tài xế cập nhật trạng thái "đang di chuyển"
+5. Khách hàng và hệ thống theo dõi hành trình theo thời gian thực (dựa trên vị trí tài xế)
+6. Tài xế cập nhật trạng thái "hoàn thành chuyến" khi đến điểm đến
+7. Hệ thống chuyển sang quy trình tính cước và thanh toán
 
-| Mã | Tên yêu cầu | Diễn giải |
-|---|---|---|
-| BN14 | Thông báo cho khách hàng | Khách hàng nhận thông báo khi: yêu cầu được tiếp nhận, tài xế nhận chuyến, tài xế đến điểm đón, chuyến hoàn thành, kết quả thanh toán |
-| BN15 | Thông báo cho tài xế | Tài xế nhận thông báo về chuyến mới hoặc thay đổi liên quan đến chuyến đang thực hiện |
+```mermaid
+flowchart TD
+    A[Tai xe duoc phan cong chuyen] --> B[Tai xe di chuyen den diem don]
+    B --> C[Cap nhat trang thai: da den diem don]
+    C --> D[Tai xe don khach]
+    D --> E[Cap nhat trang thai: da don khach]
+    E --> F[Cap nhat trang thai: dang di chuyen]
+    F --> G[He thong theo doi vi tri va trang thai chuyen]
+    G --> H[Tai xe den diem den]
+    H --> I[Cap nhat trang thai: hoan thanh chuyen]
+    I --> J[Chuyen sang quy trinh tinh cuoc va thanh toan]
+```
 
-##### Nhóm 6: Đánh giá dịch vụ
+## Quy trình 3: Tính cước và thanh toán (Fare Calculation & Payment)
 
-| Mã | Tên yêu cầu | Diễn giải |
-|---|---|---|
-| BN16 | Đánh giá tài xế | Khách hàng đánh giá tài xế sau khi hoàn thành chuyến đi |
+**Các bước:**
+1. Chuyến đi hoàn thành
+2. Hệ thống tính số tiền phải trả dựa trên loại dịch vụ và thông tin chuyến đi
+3. Khách hàng chọn phương thức thanh toán: tiền mặt hoặc điện tử
+4. Nếu tiền mặt: khách hàng thanh toán trực tiếp cho tài xế, hệ thống ghi nhận giao dịch
+5. Nếu điện tử: hệ thống gửi yêu cầu thanh toán tới nhà cung cấp thanh toán bên ngoài
+6. Nếu giao dịch điện tử thành công: hệ thống ghi nhận, thông báo kết quả cho khách hàng
+7. Nếu giao dịch điện tử thất bại: hệ thống thông báo khách hàng và cho phép xử lý lại theo chính sách doanh nghiệp
 
-##### Nhóm 7: Quản trị & Vận hành
+```mermaid
+flowchart TD
+    A[Chuyen di hoan thanh] --> B[He thong tinh cuoc chuyen di]
+    B --> C{Phuong thuc thanh toan?}
+    C -->|Tien mat| D[Khach hang thanh toan truc tiep cho tai xe]
+    D --> E[He thong ghi nhan giao dich]
+    C -->|Dien tu| F[Gui yeu cau toi nha cung cap thanh toan ben ngoai]
+    F --> G{Giao dich thanh cong?}
+    G -->|Co| E
+    G -->|Khong| H[Thong bao khach hang giao dich that bai]
+    H --> I[Cho phep xu ly lai theo chinh sach]
+    I --> C
+    E --> J[Thong bao ket qua thanh toan cho khach hang]
+    J --> K[Ket thuc quy trinh]
+```
 
-| Mã | Tên yêu cầu | Diễn giải |
-|---|---|---|
-| BN18 | Quản trị khách hàng, tài xế, phương tiện, chuyến đi | Nhân viên vận hành quản lý thông tin khách hàng, tài xế, phương tiện và các chuyến đi trên giao diện quản trị |
-| BN19 | Giám sát chuyến đi & xử lý sự cố | Nhân viên vận hành xem các chuyến đang diễn ra, kiểm tra trạng thái tài xế, hỗ trợ xử lý chuyến bị lỗi, tra cứu lịch sử giao dịch |
-| BN20 | Phân quyền chức năng quản trị | Hệ thống phân quyền để nhân viên thông thường không thể thực hiện các thao tác quản trị nhạy cảm |
-| BN21 | Báo cáo vận hành | Hệ thống cung cấp báo cáo về số lượng chuyến, doanh thu, tỷ lệ chuyến hoàn thành, tỷ lệ hủy và hiệu quả hoạt động của tài xế |
+## Quy trình 4: Thông báo (Notification Process)
 
-##### Nhóm 8: Bảo mật & Kiểm soát dữ liệu
+**Các bước:**
+1. Hệ thống xác định sự kiện cần thông báo (tiếp nhận yêu cầu, tài xế nhận chuyến, tài xế đến điểm đón, hoàn thành chuyến, kết quả thanh toán, chuyến mới/thay đổi cho tài xế)
+2. Hệ thống xác định đối tượng nhận (khách hàng hoặc tài xế)
+3. Hệ thống gửi thông báo qua kênh hiện có
+4. Kiến trúc cho phép bổ sung kênh thông báo mới trong tương lai mà không ảnh hưởng luồng hiện tại
 
-| Mã | Tên yêu cầu | Diễn giải |
-|---|---|---|
-| BN22 | Xác thực người dùng | Khách hàng và tài xế phải được xác thực trước khi sử dụng các chức năng yêu cầu tài khoản |
-| BN23 | Kiểm soát truy cập | Các thao tác quản trị phải được kiểm soát quyền truy cập |
-| BN24 | Bảo vệ dữ liệu | Thông tin cá nhân, thông tin phương tiện, dữ liệu vị trí và dữ liệu giao dịch phải được bảo vệ |
-| BN25 | Lưu vết thao tác (Audit log) | Hệ thống lưu vết các thao tác quan trọng để phục vụ kiểm tra khi có sự cố |
+```mermaid
+flowchart TD
+    A[Su kien nghiep vu xay ra] --> B{Loai su kien}
+    B -->|Tiep nhan yeu cau| C[Thong bao khach hang]
+    B -->|Tai xe nhan chuyen| C
+    B -->|Tai xe den diem don| C
+    B -->|Hoan thanh chuyen| C
+    B -->|Ket qua thanh toan| C
+    B -->|Chuyen moi hoac thay doi| D[Thong bao tai xe]
+    C --> E[Gui qua kenh thong bao hien tai]
+    D --> E
+    E --> F[Kien truc cho phep mo rong kenh moi trong tuong lai]
+```
 
-##### Nhóm 9: Kiến trúc & Khả năng mở rộng
+## Quy trình 5: Quản trị và xử lý sự cố chuyến đi (Operator Handling)
 
-| Mã | Tên yêu cầu | Diễn giải |
-|---|---|---|
-| BN26 | Khả năng mở rộng độc lập | Các thành phần của hệ thống có khả năng mở rộng (scale) độc lập khi tải tăng cao |
-| BN27 | Cô lập lỗi giữa các module | Lỗi ở chức năng thanh toán hoặc thông báo không được làm toàn bộ hệ thống đặt xe ngừng hoạt động |
-| BN28 | Triển khai từng phần (incremental deployment) | Các chức năng mới có thể được triển khai từng phần, hạn chế ảnh hưởng đến các chức năng đang hoạt động |
-| BN29 | Kiến trúc mở rộng linh hoạt | Hệ thống có kiến trúc đủ linh hoạt để bổ sung loại dịch vụ mới, phương thức thanh toán mới, nhà cung cấp thông báo mới mà không cần xây lại toàn bộ ứng dụng |
+**Các bước:**
+1. Nhân viên vận hành giám sát các chuyến đang diễn ra và trạng thái tài xế
+2. Khi phát hiện chuyến bị lỗi (ví dụ: tài xế mất kết nối, chuyến bị treo), nhân viên can thiệp xử lý
+3. Nhân viên tra cứu lịch sử giao dịch liên quan nếu cần
+4. Các thao tác nhạy cảm chỉ thực hiện được nếu nhân viên có quyền phù hợp
+5. Hệ thống ghi log thao tác xử lý để phục vụ kiểm tra sau này
 
-
-
-
-#### Bước 6: Xây dựng Business Process (Quy trình nghiệp vụ)
-
-Từ các Yêu cầu nghiệp vụ (BN) đã xác định ở Bước 5, BA xây dựng các quy trình nghiệp vụ (business process) mô tả từng bước xử lý, gắn với từng tác nhân liên quan trong hệ thống.
-
-##### 6.1 Quy trình Đặt chuyến & Tìm tài xế
-
-- Khách hàng tạo yêu cầu chuyến đi
-  + Xác nhận điểm đón
-  + Xác nhận điểm đến
-  + Chọn loại xe
-  + Gửi yêu cầu đặt xe
-- Hệ thống xác nhận yêu cầu và bắt đầu tìm tài xế
-  + Tìm tài xế phù hợp dựa trên vị trí và trạng thái sẵn sàng
-  + Nếu không có tài xế phù hợp → thông báo cho khách hàng và kết thúc quy trình
-  + Nếu có tài xế phù hợp → gửi thông báo mời chuyến đến tài xế
-- Tài xế phản hồi yêu cầu
-  + Tài xế chấp nhận chuyến → xác nhận tài xế cho chuyến, thông báo khách hàng (tài xế đã nhận + thời gian dự kiến đến)
-  + Tài xế từ chối hoặc không phản hồi trong thời gian quy định → hệ thống loại tài xế khỏi danh sách đề xuất và quay lại bước tìm tài xế khác
-  + Lặp lại cho đến khi có tài xế nhận chuyến hoặc hết danh sách tài xế phù hợp
-
-##### 6.2 Quy trình Thực hiện chuyến đi
-
-- Tài xế di chuyển đến điểm đón
-- Tài xế cập nhật trạng thái: đã đến điểm đón → hệ thống thông báo cho khách hàng
-- Kiểm tra khách hàng có mặt tại điểm đón
-  + Nếu không, quá thời gian chờ quy định → xử lý theo chính sách chờ/hủy (cần làm rõ với khách hàng)
-  + Nếu có → tài xế cập nhật trạng thái: đã đón khách
-- Tài xế cập nhật trạng thái: đang di chuyển
-- Hệ thống theo dõi và ghi nhận vị trí tài xế theo thời gian thực trong suốt chuyến đi
-- Tài xế đến điểm đến, cập nhật trạng thái: hoàn thành chuyến
-- Chuyển sang quy trình Tính cước & Thanh toán
-
-##### 6.3 Quy trình Tính cước & Thanh toán
-
-- Hệ thống tính cước dựa trên loại dịch vụ và thông tin chuyến đi sau khi chuyến hoàn thành
-- Hệ thống hiển thị số tiền phải trả cho khách hàng
-- Khách hàng chọn phương thức thanh toán
-  + Thanh toán tiền mặt:
-    - Khách hàng thanh toán trực tiếp cho tài xế
-    - Tài xế xác nhận đã nhận tiền
-    - Hệ thống ghi nhận: thanh toán thành công
-  + Thanh toán điện tử:
-    - Hệ thống gửi yêu cầu thanh toán đến nhà cung cấp thanh toán bên ngoài
-    - Nếu giao dịch thành công → ghi nhận: thanh toán thành công
-    - Nếu giao dịch thất bại → thông báo lỗi cho khách hàng, cho phép xử lý lại (thử thanh toán lại hoặc đổi phương thức)
-- Hệ thống thông báo kết quả thanh toán cho khách hàng
-- Chuyển sang quy trình Đánh giá tài xế
-
-##### 6.4 Quy trình Đánh giá tài xế
-
-- Sau khi thanh toán thành công, hệ thống mời khách hàng đánh giá tài xế
-- Khách hàng quyết định có đánh giá hay không
-  + Không đánh giá → kết thúc quy trình
-  + Có đánh giá → khách hàng chọn số sao/nhận xét
-- Hệ thống lưu đánh giá và cập nhật điểm đánh giá trung bình của tài xế
-- Dữ liệu đánh giá được đưa vào báo cáo hiệu quả hoạt động tài xế cho bộ phận vận hành
-
-##### 6.5 Quy trình Thông báo (xuyên suốt các quy trình khác)
-
-- Hệ thống phát sinh thông báo dựa theo từng sự kiện nghiệp vụ:
-  + Gửi cho khách hàng khi: yêu cầu đặt xe được tiếp nhận, tài xế nhận chuyến, tài xế đến điểm đón, chuyến hoàn thành, có kết quả thanh toán
-  + Gửi cho tài xế khi: có chuyến mới phù hợp, có thay đổi liên quan đến chuyến đang thực hiện
-- Hệ thống gửi thông báo qua kênh đã cấu hình (kiến trúc chừa sẵn khả năng bổ sung kênh thông báo mới trong tương lai)
-
-##### 6.6 Quy trình Quản trị & Vận hành (Nhân viên vận hành)
-
-- Nhân viên vận hành đăng nhập vào hệ thống quản trị
-- Xem danh sách các chuyến đang diễn ra, kiểm tra trạng thái tài xế
-- Khi phát hiện chuyến gặp sự cố:
-  + Kiểm tra chi tiết chuyến gặp sự cố
-  + Nếu thao tác xử lý thuộc nhóm nhạy cảm → chuyển yêu cầu đến nhân viên có quyền phù hợp (theo phân quyền)
-  + Nếu không → nhân viên xử lý trực tiếp (vd: hủy chuyến, hỗ trợ liên hệ khách hàng/tài xế)
-  + Hệ thống ghi log thao tác xử lý vào Audit Trail
-- Tra cứu lịch sử giao dịch khi cần
-- Xem báo cáo vận hành: số lượng chuyến, doanh thu, tỷ lệ hoàn thành/hủy, hiệu quả hoạt động tài xế
-
-##### 6.7 Quy trình Quản lý tài khoản & Hồ sơ (Khách hàng / Tài xế)
-
-- Khách hàng:
-  + Đăng ký tài khoản hoặc đăng nhập
-  + Cập nhật thông tin cá nhân khi cần
-- Tài xế:
-  + Đăng ký tài khoản, hoặc được nhân viên vận hành tạo tài khoản thay
-  + Cập nhật hồ sơ cá nhân, thông tin phương tiện
-  + Chuyển đổi trạng thái hoạt động: sẵn sàng nhận chuyến / không sẵn sàng
-  + Hệ thống ghi nhận và cập nhật vị trí tài xế liên tục khi ở trạng thái sẵn sàng, phục vụ cho quy trình tìm tài xế (6.1)
-
-##### 6.8 Bảng liên kết Business Process với Business Requirements
-
-| Business Process | Tác nhân chính | Business Requirements liên quan |
-|---|---|---|
-| 6.1 Đặt chuyến & Tìm tài xế | Khách hàng, Tài xế, Hệ thống | BN03, BN04, BN05, BN06 |
-| 6.2 Thực hiện chuyến đi | Tài xế, Hệ thống | BN07, BN08, BN09 |
-| 6.3 Tính cước & Thanh toán | Khách hàng, Tài xế, Hệ thống, Nhà cung cấp thanh toán | BN10, BN11, BN12, BN13 |
-| 6.4 Đánh giá tài xế | Khách hàng, Hệ thống | BN16, BN17 |
-| 6.5 Thông báo | Hệ thống | BN14, BN15 |
-| 6.6 Quản trị & Vận hành | Nhân viên vận hành, Hệ thống | BN18, BN19, BN20, BN21, BN23, BN25 |
-| 6.7 Quản lý tài khoản & Hồ sơ | Khách hàng, Tài xế | BN01, BN02 |
+```mermaid
+flowchart TD
+    A[Nhan vien van hanh giam sat chuyen dang dien ra] --> B{Phat hien chuyen bi loi?}
+    B -->|Khong| A
+    B -->|Co| C[Nhan vien can thiep xu ly]
+    C --> D{Thao tac co nhay cam khong?}
+    D -->|Co| E{Nhan vien co du quyen?}
+    E -->|Khong| F[Tu choi thuc hien thao tac]
+    E -->|Co| G[Thuc hien thao tac xu ly]
+    D -->|Khong| G
+    G --> H[He thong ghi log thao tac]
+    H --> I[Ket thuc xu ly su co]
+    F --> I
+```
 
 
 #### Bước 7: Phân rã thành Yêu cầu chức năng (Functional Requirements - FR)
