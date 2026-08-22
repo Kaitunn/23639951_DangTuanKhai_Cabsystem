@@ -1,87 +1,148 @@
 ### Xây dựng hệ thống cơ bản
 **Đóng vai trò:** BA (Business Analyst)
 
-#### Bước 1: Phân tích yêu cầu của khách hàng
-Ở giai đoạn sơ khởi (giai đoạn 1), BA cần tập trung vào việc **phân tích và tìm hiểu yêu cầu của khách hàng**.
-Mục tiêu chính là hiểu được **Business Context** - tức là **ngữ cảnh của nghiệp vụ**, bao gồm:
-- **Khách hàng là ai?**
-- **Doanh nghiệp đang giải quyết vấn đề gì?**
-- **Mục tiêu kinh doanh (Business Goal) là gì?**
-- **Quy trình nghiệp vụ hiện tại (As-Is) đang diễn ra như thế nào?**
-- **Những vấn đề hoặc khó khăn đang tồn tại là gì?**
-- **Hệ thống cần giải quyết vấn đề nào?**
-- **Kết quả mong muốn (To-Be) của khách hàng là gì?**
+# GIAI ĐOẠN 1: PHÂN TÍCH SƠ KHỞI YÊU CẦU KHÁCH HÀNG
 
-**Trả lời cho dự án CAB System:**
-- **Khách hàng là ai?**
-  Công ty ABC – doanh nghiệp cung cấp dịch vụ đặt xe trực tuyến.
-- **Doanh nghiệp đang giải quyết vấn đề gì?**
-  Hệ thống hiện tại (tổng đài + app đơn giản) còn nhiều hạn chế: phân công tài xế thủ công, khách hàng khó theo dõi trạng thái chuyến đi, thông tin thanh toán chưa quản lý tập trung, khó mở rộng hệ thống khi quy mô tăng.
-- **Mục tiêu kinh doanh (Business Goal) là gì?**
-  Xây dựng một nền tảng CAB mới có khả năng phục vụ số lượng lớn khách hàng và tài xế, đồng thời có thể phát triển thêm tính năng trong tương lai mà không cần xây lại toàn bộ hệ thống.
-- **Quy trình nghiệp vụ hiện tại (As-Is) đang diễn ra như thế nào?**
-  Khách hàng liên hệ tổng đài hoặc dùng app đơn giản để yêu cầu xe → nhân viên phân công tài xế thủ công → khách hàng khó nắm được trạng thái chuyến → thanh toán và dữ liệu chưa tập trung, khó theo dõi.
-- **Những vấn đề hoặc khó khăn đang tồn tại là gì?**
-  - Phân công tài xế thủ công, chậm, không tối ưu.
-  - Thiếu minh bạch về trạng thái chuyến đi cho khách hàng.
-  - Thanh toán phân mảnh, chưa tích hợp cổng thanh toán bên ngoài an toàn.
-  - Khó mở rộng hạ tầng khi tải tăng cao (giờ cao điểm).
-  - Thiếu công cụ quản trị & báo cáo cho vận hành.
-  - Chưa có kiểm soát bảo mật, phân quyền và audit trail rõ ràng.
-- **Hệ thống cần giải quyết vấn đề nào?**
-  Tự động hóa việc tìm và phân công tài xế, tập trung hóa quản lý thanh toán, cung cấp khả năng theo dõi chuyến đi theo thời gian thực, đảm bảo hệ thống có thể mở rộng độc lập theo module (kiến trúc modular/microservices) và không bị sập toàn bộ khi một thành phần (thanh toán, thông báo) gặp lỗi.
-- **Kết quả mong muốn (To-Be) của khách hàng là gì?**
-  Một nền tảng CAB hoàn chỉnh, đáp ứng toàn bộ quy trình từ tạo yêu cầu → tìm/phân công tài xế → thực hiện chuyến → tính cước → thanh toán → thông báo → đánh giá sau chuyến, có khả năng mở rộng linh hoạt (thêm dịch vụ, phương thức thanh toán, kênh thông báo) và đảm bảo bảo mật, ổn định khi vận hành ở quy mô lớn.
+## 1. Business Context (Ngữ cảnh nghiệp vụ)
+
+### 1.1. Thông tin tổng quan
+
+| Mục | Nội dung |
+|---|---|
+| Khách hàng | Công ty ABC |
+| Lĩnh vực | Dịch vụ đặt xe trực tuyến (ride-hailing) |
+| Tên dự án | CAB System - Nền tảng đặt xe |
+| Thời gian triển khai | 7 tuần (MVB) |
+| Loại hình | Xây dựng mới, thay thế hệ thống hiện tại |
+
+### 1.2. Hiện trạng nghiệp vụ (As-Is)
+
+Công ty ABC hiện đang vận hành dịch vụ đặt xe thông qua hai kênh song song:
+
+- Tổng đài (liên hệ trực tiếp để yêu cầu xe)
+- Một ứng dụng đặt xe ở mức đơn giản
+
+Quy trình vận hành hiện tại mang tính thủ công, cụ thể:
+
+- Việc phân công tài xế cho khách hàng chủ yếu do con người thực hiện, chưa có cơ chế tự động hóa dựa trên vị trí hoặc trạng thái tài xế
+- Khách hàng không có công cụ để theo dõi trạng thái chuyến đi theo thời gian thực
+- Thông tin thanh toán chưa được tập trung hóa, dẫn đến khó khăn trong việc quản lý và đối soát
+- Bộ phận vận hành gặp trở ngại kỹ thuật/quy trình khi muốn mở rộng quy mô hệ thống
+
+### 1.3. Các bên liên quan (Stakeholders) được xác định sơ bộ
+
+| Nhóm | Vai trò trong hệ thống |
+|---|---|
+| Khách hàng (Customer) | Người sử dụng dịch vụ đặt xe |
+| Tài xế (Driver) | Người cung cấp dịch vụ vận chuyển |
+| Nhân viên vận hành (Operator/Admin) | Quản lý, giám sát và xử lý sự cố vận hành |
+| Ban lãnh đạo Công ty ABC | Người ra quyết định, kỳ vọng về báo cáo và khả năng mở rộng |
+| Nhà cung cấp thanh toán bên ngoài | Đối tác tích hợp xử lý giao dịch điện tử |
+
+### 1.4. Ràng buộc nghiệp vụ đã biết tại thời điểm này
+
+- Thời gian triển khai giới hạn trong 7 tuần cho bản MVB
+- Hệ thống phải phục vụ được số lượng lớn khách hàng và tài xế (yêu cầu về khả năng mở rộng ngay từ đầu)
+- Không được lưu trữ trực tiếp thông tin thanh toán nhạy cảm (thẻ/tài khoản) trong hệ thống CAB
+- Kiến trúc phải đủ linh hoạt để bổ sung loại dịch vụ mới, phương thức thanh toán mới, kênh thông báo mới trong tương lai mà không phải xây dựng lại toàn bộ hệ thống
+- Các thành phần hệ thống cần có khả năng mở rộng độc lập, lỗi ở một chức năng (ví dụ thanh toán, thông báo) không được làm gián đoạn toàn bộ hệ thống
+
+---
+
+## 2. Business Purpose (Vấn đề nghiệp vụ)
+
+### 2.1. Vấn đề cốt lõi cần giải quyết
+
+| Vấn đề hiện tại | Tác động nghiệp vụ |
+|---|---|
+| Phân công tài xế thủ công | Chậm trễ, thiếu tối ưu, khó mở rộng theo quy mô |
+| Không có cơ chế theo dõi chuyến đi thời gian thực | Trải nghiệm khách hàng kém, tăng số lượng liên hệ hỗ trợ |
+| Thông tin thanh toán phân tán, không tập trung | Khó đối soát, khó kiểm soát rủi ro tài chính |
+| Hệ thống hiện tại khó mở rộng | Hạn chế khả năng tăng trưởng số lượng khách hàng/tài xế |
+| Thiếu công cụ quản trị và báo cáo tập trung | Ban lãnh đạo và vận hành thiếu dữ liệu để ra quyết định |
+
+### 2.2. Mục tiêu nghiệp vụ mà hệ thống mới hướng tới
+
+- Tự động hóa quy trình tìm và phân công tài xế dựa trên vị trí, trạng thái sẵn sàng và tiêu chí vận hành
+- Cho phép khách hàng theo dõi toàn bộ vòng đời chuyến đi: từ lúc gửi yêu cầu, tìm tài xế, tài xế nhận chuyến, di chuyển, đến hoàn thành và thanh toán
+- Tập trung hóa việc quản lý thanh toán và tính cước, hỗ trợ cả tiền mặt và thanh toán điện tử qua đối tác bên ngoài
+- Cung cấp giao diện quản trị tập trung cho nhân viên vận hành để quản lý khách hàng, tài xế, phương tiện, chuyến đi và xử lý sự cố
+- Cung cấp hệ thống báo cáo cho ban lãnh đạo về số lượng chuyến, doanh thu, tỷ lệ hoàn thành, tỷ lệ hủy và hiệu quả hoạt động tài xế
+- Xây dựng kiến trúc có khả năng mở rộng (scale độc lập theo thành phần) và mở rộng chức năng trong tương lai mà không gây gián đoạn hệ thống đang vận hành
+- Đảm bảo an toàn thông tin: xác thực người dùng, phân quyền thao tác quản trị, bảo vệ dữ liệu cá nhân/vị trí/giao dịch, và lưu vết (audit log) các thao tác quan trọng
+
+### 2.3. Giá trị kỳ vọng đối với các nhóm liên quan
+
+| Nhóm | Giá trị kỳ vọng |
+|---|---|
+| Khách hàng | Đặt xe nhanh, theo dõi chuyến minh bạch, thanh toán thuận tiện |
+| Tài xế | Nhận chuyến rõ ràng, cập nhật trạng thái dễ dàng, minh bạch về chuyến được phân công |
+| Nhân viên vận hành | Công cụ giám sát và xử lý sự cố tập trung, phân quyền rõ ràng |
+| Ban lãnh đạo | Dữ liệu báo cáo để đánh giá hiệu quả vận hành và ra quyết định mở rộng |
 
 
 
-#### Bước 2: Xác định Stakeholders (Các bên liên quan)
+# GIAI ĐOẠN 1 (tiếp theo): XÁC ĐỊNH STAKEHOLDERS
 
-Sau khi hiểu được Business Context, BA cần xác định **ai là người liên quan đến dự án** và **mức độ ảnh hưởng/quan trọng** của từng người, để có kế hoạch giao tiếp và thu thập yêu cầu phù hợp.
-
-**Danh sách Stakeholders**
+## 1. Danh sách Stakeholders và Vai trò
 
 | Stakeholder | Vai trò |
 |---|---|
-| Ban lãnh đạo / Ban giám đốc Công ty ABC | Người ra quyết định, phê duyệt ngân sách, định hướng chiến lược sản phẩm |
-| Khách hàng (Customer) | Người sử dụng dịch vụ đặt xe, đặt chuyến, thanh toán, đánh giá tài xế |
-| Tài xế (Driver) | Người thực hiện chuyến đi, nhận/từ chối yêu cầu, cập nhật trạng thái chuyến |
-| Nhân viên vận hành (Operations Staff) | Quản trị hệ thống, xử lý sự cố, theo dõi chuyến, tra cứu báo cáo |
-| Business Analyst (BA) | Phân tích, làm rõ yêu cầu, xác định phạm vi, tài liệu hóa nghiệp vụ |
-| Đội phát triển (Development Team) | Thiết kế và xây dựng hệ thống dựa trên yêu cầu đã được làm rõ |
-| Nhà cung cấp thanh toán bên ngoài (Payment Provider) | Đối tác tích hợp xử lý giao dịch thanh toán điện tử |
-| Bộ phận bảo mật / Kiểm toán (Security/Audit) | Đảm bảo yêu cầu bảo mật, phân quyền, lưu vết thao tác được tuân thủ |
+| Khách hàng (Customer) | Người sử dụng dịch vụ đặt xe, tạo yêu cầu chuyến đi, thanh toán và đánh giá tài xế |
+| Tài xế (Driver) | Người cung cấp dịch vụ vận chuyển, nhận và thực hiện chuyến đi |
+| Nhân viên vận hành (Operator) | Quản lý khách hàng, tài xế, phương tiện, chuyến đi; xử lý sự cố vận hành hàng ngày |
+| Ban lãnh đạo Công ty ABC (Sponsor/Management) | Phê duyệt phạm vi dự án, ra quyết định chiến lược, tiêu thụ báo cáo doanh thu và hiệu quả hoạt động |
+| Nhà cung cấp thanh toán bên ngoài (Payment Gateway Provider) | Đối tác tích hợp xử lý giao dịch thanh toán điện tử |
+| Business Analyst (BA) | Phân tích, làm rõ yêu cầu, xác định phạm vi, tài liệu hóa SRS |
+| Đội ngũ phát triển (Development Team) | Thiết kế và xây dựng hệ thống dựa trên yêu cầu được BA tài liệu hóa |
+| Bộ phận quản trị hệ thống/kỹ thuật (Technical/IT Admin) | Vận hành hạ tầng, đảm bảo khả năng mở rộng và ổn định hệ thống |
 
+## 2. Stakeholder Matrix (Mức độ ảnh hưởng - Mức độ quan tâm)
 
-**Ma trận Stakeholders (Power/Interest Matrix)**
-
-Ma trận thể hiện mức độ **quyền lực/ảnh hưởng (Power)** và **mức độ quan tâm (Interest)** của từng stakeholder đối với dự án, giúp BA xác định ưu tiên giao tiếp:
+Ma trận dưới đây phân loại stakeholders theo hai trục: **Power (Mức độ ảnh hưởng/quyền quyết định)** và **Interest (Mức độ quan tâm/tác động trực tiếp bởi hệ thống)**.
 
 ```mermaid
-quadrantChart
-    title Stakeholder Matrix - CAB System
-    x-axis Low Interest --> High Interest
-    y-axis Low Power --> High Power
-    quadrant-1 Quản lý chặt chẽ
-    quadrant-2 Giữ hài lòng
-    quadrant-3 Giám sát tối thiểu
-    quadrant-4 Giữ thông tin đầy đủ
-    Ban lanh dao: [0.85, 0.9]
-    Khach hang: [0.9, 0.4]
-    Tai xe: [0.75, 0.35]
-    Nhan vien van hanh: [0.6, 0.7]
-    BA: [0.9, 0.65]
-    Doi phat trien: [0.7, 0.55]
-    Nha cung cap thanh toan: [0.3, 0.6]
-    Bao mat Kiem toan: [0.4, 0.75]
+flowchart TB
+    subgraph HP_HI["Power cao - Interest cao (Quan ly chat che)"]
+        direction TB
+        A["Ban lanh dao Cong ty ABC"]
+        B["Nhan vien van hanh"]
+    end
+
+    subgraph HP_LI["Power cao - Interest thap (Giu hai long)"]
+        direction TB
+        C["Nha cung cap thanh toan ben ngoai"]
+        D["Bo phan quan tri he thong / IT"]
+    end
+
+    subgraph LP_HI["Power thap - Interest cao (Thong tin thuong xuyen)"]
+        direction TB
+        E["Khach hang"]
+        F["Tai xe"]
+    end
+
+    subgraph LP_LI["Power thap - Interest thap (Giam sat toi thieu)"]
+        direction TB
+        G["Doi ngu phat trien"]
+    end
+
+    HP_HI --- HP_LI
+    LP_HI --- LP_LI
+    HP_HI --- LP_HI
+    HP_LI --- LP_LI
 ```
 
-**Diễn giải 4 nhóm trong ma trận:**
+## 3. Diễn giải ma trận
 
-- **Quản lý chặt chẽ (High Power – High Interest):** Ban lãnh đạo, BA → cần giao tiếp thường xuyên, tham gia sâu vào các quyết định.
-- **Giữ hài lòng (High Power – Low Interest):** Nhân viên vận hành, Bộ phận bảo mật → cần được thông báo và đảm bảo yêu cầu của họ được đáp ứng dù không tham gia hàng ngày.
-- **Giữ thông tin đầy đủ (Low Power – High Interest):** Khách hàng, Tài xế, Đội phát triển → quan tâm trực tiếp đến kết quả, cần được cập nhật thông tin thường xuyên nhưng không có quyền quyết định phạm vi dự án.
-- **Giám sát tối thiểu (Low Power – Low Interest):** Nhà cung cấp thanh toán bên ngoài → chỉ cần phối hợp ở mức tích hợp kỹ thuật, không cần tham gia sâu vào quá trình phân tích.
+| Nhóm | Power (Ảnh hưởng) | Interest (Quan tâm) | Chiến lược tương tác |
+|---|---|---|---|
+| Ban lãnh đạo Công ty ABC | Cao | Cao | Quản lý chặt chẽ, báo cáo định kỳ, cần phê duyệt các quyết định lớn |
+| Nhân viên vận hành | Cao | Cao | Tham gia sâu vào giai đoạn thu thập yêu cầu, là người dùng chính của phân hệ quản trị |
+| Nhà cung cấp thanh toán bên ngoài | Cao | Thấp | Cần đáp ứng yêu cầu tích hợp kỹ thuật, giữ hài lòng về ràng buộc bảo mật |
+| Bộ phận quản trị hệ thống/IT | Cao | Thấp | Đảm bảo yêu cầu phi chức năng (khả năng mở rộng, ổn định) được đáp ứng |
+| Khách hàng | Thấp | Cao | Thông tin thường xuyên qua sản phẩm, thu thập phản hồi trải nghiệm |
+| Tài xế | Thấp | Cao | Thông tin thường xuyên qua sản phẩm, thu thập phản hồi vận hành |
+| Đội ngũ phát triển | Thấp | Thấp | Giám sát tối thiểu ở giai đoạn phân tích, chủ động ở giai đoạn xây dựng |
 
 
 
