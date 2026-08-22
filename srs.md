@@ -376,496 +376,218 @@ flowchart TD
 ```
 
 
-#### Bước 7: Phân rã thành Yêu cầu chức năng (Functional Requirements - FR)
+# GIAI ĐOẠN 2: PHÂN RÃ YÊU CẦU VÀ THIẾT KẾ CHI TIẾT
 
-Từ mỗi Yêu cầu nghiệp vụ (BN) đã xác định ở Bước 5, BA tiếp tục phân rã thành các **Yêu cầu chức năng (Functional Requirements - FR)** — mô tả chi tiết từng bước xử lý cụ thể mà hệ thống phải thực hiện, làm cơ sở cho đội phát triển thiết kế và xây dựng.
+## B7 - PHÂN RÃ YÊU CẦU CHỨC NĂNG (FUNCTIONAL REQUIREMENTS - FR)
 
-##### 7.1 Nhóm Tài khoản & Hồ sơ (từ BN01, BN02)
+Mỗi Business Requirement (BR) ở giai đoạn trước được phân rã thành các Functional Requirement (FR) cụ thể, mô tả hành vi kỹ thuật/chức năng mà hệ thống phải thực hiện.
 
-- **FR01:** Cho phép khách hàng đăng ký tài khoản bằng số điện thoại/email
-- **FR02:** Cho phép khách hàng/tài xế đăng nhập bằng tài khoản đã đăng ký
-- **FR03:** Cho phép nhân viên vận hành tạo tài khoản thay cho tài xế
-- **FR04:** Cho phép khách hàng cập nhật thông tin cá nhân (họ tên, số điện thoại, email...)
-- **FR05:** Cho phép tài xế cập nhật hồ sơ cá nhân và thông tin phương tiện (biển số, loại xe, hãng xe...)
-- **FR06:** Cho phép tài xế chuyển đổi trạng thái hoạt động: sẵn sàng nhận chuyến / không sẵn sàng
+### FR nhóm BR01-BR02: Quản lý tài khoản khách hàng
 
-##### 7.2 Nhóm Đặt xe & Tìm tài xế (từ BN03, BN04, BN05, BN06)
+| Mã | Tên FR | Diễn giải |
+|---|---|---|
+| FR01 | Đăng ký tài khoản khách hàng | Hệ thống cho phép khách hàng tạo tài khoản mới với thông tin cơ bản (họ tên, số điện thoại, mật khẩu) |
+| FR02 | Đăng nhập khách hàng | Hệ thống xác thực khách hàng qua số điện thoại/email và mật khẩu |
+| FR03 | Cập nhật hồ sơ khách hàng | Hệ thống cho phép khách hàng chỉnh sửa thông tin cá nhân đã đăng ký |
 
-**Đặt chuyến (BN03):**
-- **FR07:** Cho phép khách hàng nhập điểm đón (chọn trên bản đồ hoặc nhập địa chỉ)
-- **FR08:** Cho phép khách hàng nhập điểm đến
-- **FR09:** Cho phép khách hàng chọn loại xe (vd: xe máy, xe 4 chỗ, xe 7 chỗ...)
-- **FR10:** Cho phép khách hàng gửi yêu cầu đặt xe sau khi xác nhận đầy đủ thông tin
+### FR nhóm BR03: Đặt chuyến xe
 
-**Tìm tài xế (BN04) — ví dụ minh họa của bạn:**
-- **FR11:** Xác định vị trí hiện tại của khách hàng (lấy từ điểm đón)
-- **FR12:** Tìm các tài xế đang ở trạng thái online/sẵn sàng trong bán kính xung quanh vị trí khách hàng
-- **FR13:** Lọc tài xế theo loại xe khách hàng đã chọn
-- **FR14:** *(Điều kiện)* Nếu yêu cầu của khách hàng có tiêu chí "tài xế rating cao" → lọc thêm theo điểm đánh giá tối thiểu; nếu không có tiêu chí này → bỏ qua bước lọc rating
-- **FR15:** Sắp xếp danh sách tài xế phù hợp theo khoảng cách gần nhất
-- **FR16:** Gửi thông báo mời chuyến lần lượt đến tài xế theo thứ tự ưu tiên
-- **FR17:** Đặt thời gian giới hạn chờ phản hồi cho mỗi tài xế được mời
-- **FR18:** Nếu tài xế từ chối hoặc hết thời gian chờ → loại khỏi danh sách và mời tài xế tiếp theo (quay lại FR16)
-- **FR19:** Nếu không còn tài xế phù hợp trong danh sách → dừng tìm kiếm
+| Mã | Tên FR | Diễn giải |
+|---|---|---|
+| FR04 | Nhập điểm đón | Khách hàng nhập hoặc chọn điểm đón trên bản đồ |
+| FR05 | Nhập điểm đến | Khách hàng nhập hoặc chọn điểm đến trên bản đồ |
+| FR06 | Chọn loại xe | Khách hàng chọn loại dịch vụ/loại xe mong muốn |
+| FR07 | Gửi yêu cầu đặt xe | Hệ thống ghi nhận yêu cầu đặt xe và chuyển sang trạng thái tìm tài xế |
 
-**Không tìm được tài xế (BN05):**
-- **FR20:** Thông báo rõ ràng cho khách hàng khi không tìm được tài xế phù hợp
-- **FR21:** Cho phép khách hàng thử lại yêu cầu đặt xe sau khi nhận thông báo
+### FR nhóm BR13: Tìm và phân công tài xế (Driver Matching)
 
-**Tài xế phản hồi (BN06):**
-- **FR22:** Hiển thị thông tin chuyến mời (điểm đón, điểm đến, loại xe, cước dự kiến) cho tài xế
-- **FR23:** Cho phép tài xế chấp nhận chuyến
-- **FR24:** Cho phép tài xế từ chối chuyến
-- **FR25:** Xác nhận tài xế chính thức cho chuyến sau khi chấp nhận, khóa chuyến không cho tài xế khác nhận trùng
+| Mã | Tên FR | Diễn giải |
+|---|---|---|
+| FR08 | Xác định vị trí của khách hàng | Hệ thống lấy tọa độ điểm đón làm gốc để tìm kiếm |
+| FR09 | Xác định tài xế online trong bán kính | Hệ thống lọc các tài xế đang ở trạng thái sẵn sàng, trong bán kính tìm kiếm quanh điểm đón |
+| FR10 | Lọc theo loại xe khách hàng đã chọn | Hệ thống chỉ chọn các tài xế có phương tiện phù hợp với loại xe khách hàng yêu cầu |
+| FR11 | Lọc theo đánh giá tài xế (điều kiện) | Nếu yêu cầu đặt xe có tiêu chí "tài xế đánh giá cao", hệ thống ưu tiên/lọc tài xế theo rating; nếu không có tiêu chí này thì bỏ qua bước lọc |
+| FR12 | Sắp xếp và đề xuất tài xế | Hệ thống xếp hạng danh sách tài xế phù hợp (theo khoảng cách, rating nếu có) và gửi đề xuất cho tài xế đầu danh sách |
+| FR13 | Xử lý phản hồi của tài xế | Hệ thống ghi nhận tài xế chấp nhận hoặc từ chối chuyến |
+| FR14 | Tìm tài xế thay thế | Nếu tài xế từ chối hoặc không phản hồi trong thời hạn, hệ thống tự động chuyển đề xuất sang tài xế tiếp theo trong danh sách |
+| FR15 | Thông báo không tìm được tài xế | Nếu không còn tài xế phù hợp sau các lần thử, hệ thống thông báo cho khách hàng |
 
-##### 7.3 Nhóm Thực hiện chuyến đi (từ BN07, BN08, BN09, BN17)
+### FR nhóm BR07-BR12: Quản lý tài xế và thực hiện chuyến
 
-- **FR26:** Cho phép tài xế cập nhật trạng thái "đã đến điểm đón"
-- **FR27:** Cho phép tài xế cập nhật trạng thái "đã đón khách"
-- **FR28:** Cho phép tài xế cập nhật trạng thái "đang di chuyển"
-- **FR29:** Cho phép tài xế cập nhật trạng thái "hoàn thành chuyến"
-- **FR30:** Hiển thị cho khách hàng trạng thái chuyến đi theo thời gian thực
-- **FR31:** Hiển thị thời gian dự kiến tài xế đến điểm đón (ETA)
-- **FR32:** Ghi nhận vị trí tài xế định kỳ (vd: mỗi vài giây) trong suốt chuyến đi
-- **FR33:** Cho phép khách hàng xem lại danh sách các chuyến đã thực hiện
-- **FR34:** Hiển thị chi tiết một chuyến trong lịch sử (điểm đón, điểm đến, số tiền, tài xế, thời gian)
+| Mã | Tên FR | Diễn giải |
+|---|---|---|
+| FR16 | Đăng ký/tạo tài khoản tài xế | Tài xế tự đăng ký hoặc được nhân viên vận hành tạo tài khoản |
+| FR17 | Cập nhật hồ sơ và phương tiện | Tài xế cập nhật thông tin cá nhân và thông tin phương tiện |
+| FR18 | Chuyển trạng thái sẵn sàng | Tài xế bật/tắt trạng thái sẵn sàng nhận chuyến |
+| FR19 | Cập nhật vị trí tài xế | Hệ thống ghi nhận vị trí hiện tại của tài xế theo chu kỳ khi đang hoạt động |
+| FR20 | Cập nhật trạng thái chuyến đi | Tài xế cập nhật các mốc: đã đến điểm đón, đã đón khách, đang di chuyển, hoàn thành chuyến |
 
-##### 7.4 Nhóm Tính cước & Thanh toán (từ BN10, BN11, BN12, BN13)
+### FR nhóm BR14-BR17: Tính cước và thanh toán
 
-- **FR35:** Tính khoảng cách và thời gian di chuyển thực tế của chuyến đi
-- **FR36:** Tính số tiền phải trả dựa trên loại dịch vụ và công thức cước cơ bản (khoảng cách/thời gian)
-- **FR37:** Hiển thị số tiền cần thanh toán cho khách hàng sau khi chuyến hoàn thành
-- **FR38:** Cho phép khách hàng chọn phương thức thanh toán: tiền mặt hoặc điện tử
-- **FR39:** Ghi nhận xác nhận của tài xế khi khách hàng thanh toán tiền mặt
-- **FR40:** Gửi yêu cầu thanh toán điện tử đến nhà cung cấp thanh toán bên ngoài (qua API/tích hợp)
-- **FR41:** Nhận kết quả giao dịch từ nhà cung cấp thanh toán (thành công/thất bại)
-- **FR42:** Thông báo lỗi cho khách hàng khi giao dịch điện tử thất bại
-- **FR43:** Cho phép khách hàng thử thanh toán lại hoặc đổi phương thức khi giao dịch thất bại
-- **FR44:** Không lưu trữ trực tiếp thông tin thẻ/tài khoản thanh toán nhạy cảm trong hệ thống CAB
+| Mã | Tên FR | Diễn giải |
+|---|---|---|
+| FR21 | Tính cước chuyến đi | Hệ thống tính số tiền phải trả dựa trên loại dịch vụ và thông tin hành trình |
+| FR22 | Thanh toán tiền mặt | Hệ thống ghi nhận giao dịch thanh toán tiền mặt sau khi khách hàng trả trực tiếp cho tài xế |
+| FR23 | Thanh toán điện tử | Hệ thống gửi yêu cầu thanh toán tới cổng thanh toán bên ngoài và nhận kết quả |
+| FR24 | Xử lý thanh toán thất bại | Hệ thống thông báo khách hàng và cho phép thử lại giao dịch khi thanh toán điện tử thất bại |
 
-##### 7.5 Nhóm Thông báo (từ BN14, BN15)
+### FR nhóm BR18-BR19: Thông báo
 
-- **FR45:** Gửi thông báo cho khách hàng khi yêu cầu đặt xe được tiếp nhận
-- **FR46:** Gửi thông báo cho khách hàng khi tài xế nhận chuyến
-- **FR47:** Gửi thông báo cho khách hàng khi tài xế đến điểm đón
-- **FR48:** Gửi thông báo cho khách hàng khi chuyến hoàn thành
-- **FR49:** Gửi thông báo cho khách hàng khi có kết quả thanh toán
-- **FR50:** Gửi thông báo cho tài xế khi có chuyến mới phù hợp
-- **FR51:** Gửi thông báo cho tài xế khi có thay đổi liên quan đến chuyến đang thực hiện
-- **FR52:** Thiết kế module thông báo dạng độc lập (service riêng) để dễ bổ sung kênh gửi mới sau này
+| Mã | Tên FR | Diễn giải |
+|---|---|---|
+| FR25 | Gửi thông báo cho khách hàng | Hệ thống gửi thông báo tại các mốc: tiếp nhận yêu cầu, tài xế nhận chuyến, tài xế đến điểm đón, hoàn thành chuyến, kết quả thanh toán |
+| FR26 | Gửi thông báo cho tài xế | Hệ thống gửi thông báo về chuyến mới hoặc thay đổi liên quan chuyến đang thực hiện |
 
-##### 7.6 Nhóm Đánh giá tài xế (từ BN16)
+### FR nhóm BR20-BR22: Quản trị vận hành
 
-- **FR53:** Hiển thị lời mời đánh giá cho khách hàng sau khi thanh toán thành công
-- **FR54:** Cho phép khách hàng chọn số sao đánh giá (vd: 1–5 sao)
-- **FR55:** Cho phép khách hàng nhập nhận xét (tùy chọn)
-- **FR56:** Lưu đánh giá và cập nhật điểm đánh giá trung bình của tài xế
-- **FR57:** Cho phép khách hàng bỏ qua bước đánh giá
+| Mã | Tên FR | Diễn giải |
+|---|---|---|
+| FR27 | Xem danh sách chuyến đang diễn ra | Nhân viên vận hành xem trạng thái các chuyến hiện tại |
+| FR28 | Kiểm tra trạng thái tài xế | Nhân viên vận hành tra cứu trạng thái hoạt động của tài xế |
+| FR29 | Xử lý chuyến bị lỗi | Nhân viên vận hành can thiệp thủ công vào chuyến gặp sự cố |
+| FR30 | Tra cứu lịch sử giao dịch | Nhân viên vận hành tìm kiếm lịch sử chuyến và thanh toán |
+| FR31 | Phân quyền chức năng | Hệ thống giới hạn thao tác nhạy cảm theo vai trò nhân viên |
+| FR32 | Xem báo cáo vận hành | Hệ thống hiển thị báo cáo số chuyến, doanh thu, tỷ lệ hoàn thành/hủy, hiệu quả tài xế |
 
-##### 7.7 Nhóm Quản trị & Vận hành (từ BN18, BN19, BN20, BN21)
+### FR nhóm BR23-BR24: Bảo mật
 
-- **FR58:** Hiển thị danh sách khách hàng, tài xế, phương tiện cho nhân viên vận hành
-- **FR59:** Cho phép nhân viên vận hành tìm kiếm/lọc thông tin khách hàng, tài xế, chuyến đi
-- **FR60:** Hiển thị danh sách các chuyến đang diễn ra theo thời gian thực
-- **FR61:** Hiển thị trạng thái hiện tại của từng tài xế
-- **FR62:** Cho phép nhân viên vận hành can thiệp xử lý chuyến gặp sự cố (vd: hủy chuyến, gán lại tài xế)
-- **FR63:** Cho phép tra cứu lịch sử giao dịch theo khách hàng/tài xế/khoảng thời gian
-- **FR64:** Kiểm tra quyền của nhân viên trước khi cho thực hiện thao tác nhạy cảm
-- **FR65:** Tạo báo cáo số lượng chuyến theo khoảng thời gian
-- **FR66:** Tạo báo cáo doanh thu theo khoảng thời gian
-- **FR67:** Tạo báo cáo tỷ lệ chuyến hoàn thành / tỷ lệ hủy
-- **FR68:** Tạo báo cáo hiệu quả hoạt động của từng tài xế (số chuyến, điểm đánh giá trung bình)
+| Mã | Tên FR | Diễn giải |
+|---|---|---|
+| FR33 | Xác thực người dùng | Hệ thống yêu cầu đăng nhập trước khi truy cập chức năng có tài khoản |
+| FR34 | Ghi log thao tác quan trọng | Hệ thống lưu vết các thao tác quản trị và giao dịch quan trọng |
 
-##### 7.8 Nhóm Bảo mật & Kiểm soát dữ liệu (từ BN22, BN23, BN24, BN25)
+---
 
-- **FR69:** Xác thực khách hàng/tài xế bằng tài khoản (mật khẩu/OTP) trước khi truy cập chức năng yêu cầu đăng nhập
-- **FR70:** Kiểm tra vai trò (role) người dùng trước khi cho phép thực hiện thao tác quản trị
-- **FR71:** Mã hóa/bảo vệ dữ liệu cá nhân, dữ liệu vị trí và dữ liệu giao dịch khi lưu trữ và truyền tải
-- **FR72:** Ghi log mọi thao tác quan trọng (ai thực hiện, thời gian, hành động) vào Audit Trail
-- **FR73:** Cho phép nhân viên có quyền phù hợp tra cứu Audit Trail khi cần điều tra sự cố
+## B8 - QUY TẮC NGHIỆP VỤ (BUSINESS RULES) VÀ NGOẠI LỆ (EXCEPTIONS)
 
-##### 7.9 Nhóm Kiến trúc & Khả năng mở rộng (từ BN26, BN27, BN28, BN29)
+### 1. Business Rules
 
-> *Ghi chú: Nhóm này thiên về yêu cầu phi chức năng (NFR) hơn là FR, nhưng được liệt kê dưới dạng yêu cầu kỹ thuật cụ thể để đội phát triển có cơ sở thiết kế kiến trúc.*
-
-- **FR74:** Tách các module (đặt xe, thanh toán, thông báo, quản trị...) thành các service độc lập, có thể scale riêng
-- **FR75:** Thiết kế cơ chế cô lập lỗi (vd: circuit breaker, timeout, retry) giữa các service để lỗi một module không lan sang module khác
-- **FR76:** Thiết kế API/kiến trúc dạng module hóa để có thể triển khai (deploy) cập nhật từng phần
-- **FR77:** Thiết kế lớp tích hợp thanh toán (payment adapter) và thông báo (notification adapter) theo dạng plug-in để dễ bổ sung nhà cung cấp mới
-
-##### 7.10 Bảng tổng hợp liên kết FR → BN
-
-| Nhóm FR | Business Requirement gốc |
+| Mã | Quy tắc nghiệp vụ |
 |---|---|
-| 7.1 (FR01–FR06) | BN01, BN02 |
-| 7.2 (FR07–FR25) | BN03, BN04, BN05, BN06 |
-| 7.3 (FR26–FR34) | BN07, BN08, BN09, BN17 |
-| 7.4 (FR35–FR44) | BN10, BN11, BN12, BN13 |
-| 7.5 (FR45–FR52) | BN14, BN15 |
-| 7.6 (FR53–FR57) | BN16 |
-| 7.7 (FR58–FR68) | BN18, BN19, BN20, BN21 |
-| 7.8 (FR69–FR73) | BN22, BN23, BN24, BN25 |
-| 7.9 (FR74–FR77) | BN26, BN27, BN28, BN29 |
+| BRule01 | Chỉ tài xế đang ở trạng thái sẵn sàng (online) mới được hệ thống đề xuất nhận chuyến |
+| BRule02 | Một tài xế chỉ được nhận một chuyến tại một thời điểm |
+| BRule03 | Hệ thống chỉ đề xuất chuyến cho tài xế có loại phương tiện khớp với loại xe khách hàng đã chọn |
+| BRule04 | Nếu yêu cầu đặt xe có tiêu chí rating cao, chỉ đề xuất tài xế đạt ngưỡng đánh giá tối thiểu (ngưỡng cụ thể - *TBD*, cần xác nhận với khách hàng) |
+| BRule05 | Tài xế phải phản hồi (chấp nhận/từ chối) trong một khoảng thời gian giới hạn (thời hạn cụ thể - *TBD*, cần xác nhận với khách hàng); quá thời hạn được xem như từ chối |
+| BRule06 | Thông tin thanh toán nhạy cảm (số thẻ, tài khoản) không được lưu trực tiếp trong hệ thống CAB, chỉ lưu tham chiếu giao dịch từ cổng thanh toán |
+| BRule07 | Chỉ nhân viên vận hành có quyền phù hợp mới được thực hiện các thao tác quản trị nhạy cảm |
+| BRule08 | Mọi thao tác quản trị và giao dịch quan trọng đều phải được ghi log để phục vụ kiểm tra |
+| BRule09 | Cước phí chuyến đi được tính dựa trên loại dịch vụ và thông tin hành trình đã hoàn thành (công thức cụ thể - *TBD*, cần xác nhận với khách hàng) |
+| BRule10 | Trạng thái chuyến đi phải tuân theo trình tự: tạo yêu cầu -> tìm tài xế -> đã phân công -> đến điểm đón -> đã đón khách -> đang di chuyển -> hoàn thành |
 
+### 2. Exceptions (Ngoại lệ) và cách xử lý
 
+| Mã | Tình huống ngoại lệ | Cách xử lý (đề xuất, cần xác nhận với khách hàng) |
+|---|---|---|
+| EX01 | Tài xế được đề xuất không phản hồi trong thời hạn quy định | Hệ thống tự động chuyển đề xuất sang tài xế tiếp theo trong danh sách phù hợp (theo FR14) |
+| EX02 | Tài xế từ chối chuyến | Hệ thống tự động tìm và đề xuất tài xế khác, không yêu cầu khách hàng tạo lại yêu cầu |
+| EX03 | Không tìm được tài xế phù hợp nào trong khu vực | Hệ thống thông báo rõ cho khách hàng rằng không tìm được tài xế, đề xuất khách hàng thử lại sau |
+| EX04 | Khách hàng chờ tìm tài xế quá lâu | Cần định nghĩa ngưỡng thời gian chờ tối đa; khi vượt ngưỡng, hệ thống tự động hủy yêu cầu và thông báo khách hàng (chính sách cụ thể - *TBD*) |
+| EX05 | Giao dịch thanh toán điện tử thất bại | Hệ thống thông báo khách hàng, cho phép chọn phương thức thanh toán khác hoặc thử lại theo chính sách doanh nghiệp |
+| EX06 | Tài xế mất kết nối mạng trong khi thực hiện chuyến | Hệ thống đánh dấu chuyến ở trạng thái cần theo dõi, nhân viên vận hành có thể can thiệp thủ công (chính sách xử lý cụ thể - *TBD*) |
+| EX07 | Khách hàng muốn hủy chuyến sau khi đã có tài xế nhận | Cần chính sách hủy chuyến cụ thể (phí hủy, thời điểm được phép hủy) - *TBD*, cần xác nhận với khách hàng |
+| EX08 | Tài xế hủy chuyến giữa chừng sau khi đã nhận | Hệ thống cần đưa chuyến trở lại quy trình tìm tài xế mới, đồng thời ghi nhận hành vi hủy để phục vụ đánh giá hiệu quả tài xế (chính sách xử phạt cụ thể - *TBD*) |
+| EX09 | Nhân viên vận hành không đủ quyền thực hiện thao tác nhạy cảm | Hệ thống từ chối thao tác và ghi log lần thử truy cập |
+| EX10 | Hệ thống thanh toán hoặc thông báo gặp sự cố | Chức năng đặt xe và thực hiện chuyến vẫn phải hoạt động bình thường (theo yêu cầu phi chức năng về khả năng chịu lỗi độc lập giữa các thành phần) |
 
-#### Bước 8: Thiết kế Business Rules & Exception Handling
+> Các mục đánh dấu *TBD* (To Be Determined) cần được Business Analyst làm rõ với khách hàng trước khi đội phát triển triển khai, theo đúng ghi nhận trong tài liệu yêu cầu gốc.
 
-Sau khi có các Yêu cầu chức năng (FR), BA cần xác định **Business Rules (quy tắc nghiệp vụ)** — các ràng buộc/điều kiện hệ thống phải luôn tuân thủ, và **Exceptions (ngoại lệ)** — các tình huống bất thường có thể xảy ra cùng cách hệ thống xử lý, để đội phát triển không bỏ sót logic quan trọng.
+---
 
-##### 8.1 Business Rules & Exceptions — Nhóm Tài khoản & Hồ sơ
+## B9 - DATA MODELING (MÔ HÌNH DỮ LIỆU)
 
-**Business Rules**
-- **BR01:** Một số điện thoại/email chỉ được đăng ký cho một tài khoản duy nhất trên hệ thống
-- **BR02:** Tài xế phải khai báo đầy đủ thông tin phương tiện (biển số, loại xe) trước khi được chuyển sang trạng thái "sẵn sàng nhận chuyến"
-
-**Exceptions**
-- **EX01:** Khách hàng/tài xế nhập số điện thoại/email đã tồn tại khi đăng ký → hệ thống từ chối và thông báo tài khoản đã tồn tại, gợi ý đăng nhập hoặc khôi phục mật khẩu
-- **EX02:** Tài xế cố chuyển sang trạng thái "sẵn sàng" khi hồ sơ/phương tiện chưa đầy đủ → hệ thống chặn và yêu cầu bổ sung thông tin còn thiếu
-
-##### 8.2 Business Rules & Exceptions — Nhóm Đặt xe & Tìm tài xế
-
-**Business Rules**
-- **BR03:** Chỉ những tài xế đang ở trạng thái **sẵn sàng (online)** mới được hệ thống đề xuất nhận chuyến
-- **BR04:** Một tài xế chỉ được nhận **1 chuyến tại một thời điểm** (không được nhận chuyến mới khi đang thực hiện chuyến khác)
-- **BR05:** Tài xế được mời chuyến phải phản hồi (chấp nhận/từ chối) trong một khoảng thời gian giới hạn quy định *(giá trị cụ thể — cần xác nhận với khách hàng, xem Open Issues)*
-- **BR06:** Hệ thống chỉ đề xuất tài xế có loại xe đúng với loại khách hàng đã chọn khi đặt chuyến
-
-**Exceptions**
-- **EX03:** Khách hàng chờ tìm tài xế quá lâu (vượt ngưỡng thời gian chờ tối đa) → hệ thống dừng tìm kiếm và thông báo rõ ràng cho khách hàng rằng chưa tìm được tài xế, đề xuất khách hàng thử lại sau
-- **EX04:** Tài xế được đề xuất **không phản hồi trong thời gian quy định** (hết hạn BR05) → hệ thống tự động coi như từ chối, loại tài xế khỏi danh sách đề xuất cho chuyến này, và chuyển sang mời tài xế tiếp theo
-- **EX05:** Tài xế **chủ động từ chối** chuyến → hệ thống ngay lập tức chuyển sang mời tài xế tiếp theo trong danh sách, không chờ hết thời gian giới hạn
-- **EX06:** Không còn tài xế nào phù hợp trong danh sách đề xuất (đã mời hết) → xử lý như EX03 (thông báo không tìm được tài xế)
-- **EX07:** Hai tài xế cùng lúc bấm "chấp nhận" một chuyến (trường hợp tranh chấp/race condition) → hệ thống chỉ xác nhận cho tài xế đầu tiên gửi yêu cầu chấp nhận thành công, tài xế còn lại nhận thông báo "chuyến đã có tài xế khác nhận"
-
-##### 8.3 Business Rules & Exceptions — Nhóm Thực hiện chuyến đi
-
-**Business Rules**
-- **BR07:** Tài xế chỉ được cập nhật trạng thái chuyến theo đúng thứ tự: đã đến điểm đón → đã đón khách → đang di chuyển → hoàn thành (không được bỏ qua bước hoặc đảo ngược trạng thái)
-- **BR08:** Khách hàng có một khoảng thời gian chờ tối đa tại điểm đón trước khi tài xế được phép báo cáo "khách không có mặt" *(giá trị cụ thể — cần xác nhận, xem Open Issues)*
-
-**Exceptions**
-- **EX08:** Tài xế đến điểm đón nhưng khách hàng không có mặt quá thời gian chờ (hết hạn BR08) → hệ thống xử lý theo chính sách chờ/hủy chuyến *(chính sách cụ thể — cần khách hàng xác nhận)*
-- **EX09:** Mất kết nối vị trí (GPS) của tài xế trong khi đang thực hiện chuyến → hệ thống giữ nguyên trạng thái chuyến gần nhất đã ghi nhận, thử kết nối lại, và cảnh báo cho nhân viên vận hành nếu mất kết nối quá lâu *(ngưỡng thời gian — cần làm rõ)*
-- **EX10:** Tài xế/khách hàng thoát ứng dụng giữa chuyến (mất kết nối mạng) → hệ thống không tự hủy chuyến ngay, cho phép resume khi kết nối lại trong một khoảng thời gian nhất định *(cần làm rõ chi tiết xử lý mất kết nối)*
-
-##### 8.4 Business Rules & Exceptions — Nhóm Tính cước & Thanh toán
-
-**Business Rules**
-- **BR09:** Cước phí chỉ được tính **sau khi** chuyến đi ở trạng thái "hoàn thành"
-- **BR10:** Thông tin thẻ/tài khoản thanh toán nhạy cảm **không được lưu trữ trực tiếp** trong hệ thống CAB, chỉ lưu token/tham chiếu từ nhà cung cấp thanh toán bên ngoài
-- **BR11:** Một chuyến đi chỉ được xác nhận thanh toán thành công **một lần**, không cho phép trừ tiền/thu tiền trùng lặp
-
-**Exceptions**
-- **EX11:** Giao dịch thanh toán điện tử thất bại (lỗi mạng, thẻ không đủ tiền, timeout từ nhà cung cấp...) → hệ thống thông báo lỗi cho khách hàng và cho phép thử lại hoặc đổi phương thức thanh toán, theo BR11 không tính tiền trùng
-- **EX12:** Khách hàng chọn thanh toán tiền mặt nhưng không đủ tiền mặt tại chỗ → xử lý theo chính sách của doanh nghiệp *(chưa được chốt — cần làm rõ)*
-- **EX13:** Nhà cung cấp thanh toán bên ngoài gặp sự cố / không phản hồi (timeout) → hệ thống không để khách hàng chờ vô thời hạn, hiển thị thông báo lỗi tạm thời và gợi ý phương thức thanh toán khác (vd: tiền mặt)
-
-##### 8.5 Business Rules & Exceptions — Nhóm Thông báo
-
-**Business Rules**
-- **BR12:** Mỗi sự kiện nghiệp vụ quan trọng (BN14, BN15) phải kích hoạt đúng **một** thông báo tương ứng, không gửi trùng lặp
-
-**Exceptions**
-- **EX14:** Gửi thông báo thất bại (do lỗi kênh gửi, mất kết nối thiết bị...) → hệ thống ghi log lỗi gửi thông báo và thử gửi lại theo cơ chế retry có giới hạn số lần, không làm gián đoạn luồng nghiệp vụ chính (đúng theo BR nhóm Kiến trúc — cô lập lỗi)
-
-##### 8.6 Business Rules & Exceptions — Nhóm Đánh giá tài xế
-
-**Business Rules**
-- **BR13:** Khách hàng chỉ được đánh giá **sau khi** chuyến đã thanh toán thành công
-- **BR14:** Mỗi chuyến đi chỉ được đánh giá **một lần**
-
-**Exceptions**
-- **EX15:** Khách hàng bỏ qua bước đánh giá → hệ thống không ép buộc, chuyến vẫn được coi là hoàn tất bình thường
-
-##### 8.7 Business Rules & Exceptions — Nhóm Quản trị & Vận hành
-
-**Business Rules**
-- **BR15:** Nhân viên vận hành thông thường **không được thực hiện** các thao tác quản trị nhạy cảm (vd: xóa dữ liệu, chỉnh sửa giao dịch tài chính) — chỉ nhân viên có quyền phù hợp mới thực hiện được
-- **BR16:** Mọi thao tác can thiệp vào chuyến đi hoặc dữ liệu quan trọng của nhân viên vận hành phải được ghi log vào Audit Trail
-
-**Exceptions**
-- **EX16:** Nhân viên không đủ quyền cố thực hiện thao tác nhạy cảm → hệ thống từ chối thao tác và thông báo không đủ quyền, đồng thời ghi log nỗ lực truy cập trái phép
-- **EX17:** Chuyến đi bị lỗi không thuộc các exception đã định nghĩa sẵn (trường hợp phát sinh ngoài dự kiến) → nhân viên vận hành có quyền can thiệp thủ công (hủy chuyến, gán lại tài xế), thao tác này bắt buộc ghi log theo BR16
-
-##### 8.8 Business Rules & Exceptions — Nhóm Bảo mật & Dữ liệu
-
-**Business Rules**
-- **BR17:** Người dùng chưa xác thực (chưa đăng nhập) không được phép truy cập bất kỳ chức năng nào yêu cầu tài khoản
-- **BR18:** Dữ liệu cá nhân, vị trí, giao dịch phải được mã hóa khi lưu trữ và truyền tải
-
-**Exceptions**
-- **EX18:** Người dùng cố truy cập chức năng cần tài khoản khi chưa đăng nhập/token hết hạn → hệ thống chặn truy cập, chuyển hướng về màn hình đăng nhập
-
-##### 8.9 Bảng tổng hợp
-
-| Nhóm | Business Rules | Exceptions | Trạng thái làm rõ |
-|---|---|---|---|
-| Tài khoản & Hồ sơ | BR01–BR02 | EX01–EX02 | Đã rõ |
-| Đặt xe & Tìm tài xế | BR03–BR06 | EX03–EX07 | BR05 (thời gian phản hồi) cần chốt giá trị cụ thể |
-| Thực hiện chuyến đi | BR07–BR08 | EX08–EX10 | BR08, EX08, EX09, EX10 cần làm rõ (chính sách chờ/hủy, xử lý mất kết nối) |
-| Tính cước & Thanh toán | BR09–BR11 | EX11–EX13 | EX12 cần chính sách cụ thể |
-| Thông báo | BR12 | EX14 | Đã rõ |
-| Đánh giá tài xế | BR13–BR14 | EX15 | Đã rõ |
-| Quản trị & Vận hành | BR15–BR16 | EX16–EX17 | Đã rõ |
-| Bảo mật & Dữ liệu | BR17–BR18 | EX18 | Đã rõ |
-
-
-#### Bước 9: Data Modeling (Xây dựng mô hình dữ liệu)
-
-Từ các Business Requirements và Functional Requirements đã xác định, BA xác định các **thực thể dữ liệu (entities)** cốt lõi mà hệ thống cần quản lý, thuộc tính chính của từng thực thể, và mối quan hệ giữa chúng — làm cơ sở cho đội phát triển thiết kế cơ sở dữ liệu.
-
-##### 9.1 Danh sách các thực thể (Entities)
+### 1. Danh sách thực thể (Entities) chính
 
 | Thực thể | Mô tả |
 |---|---|
-| **Account** | Tài khoản đăng nhập chung, dùng chung cho Customer, Driver, OperationsStaff (xác thực) |
-| **Customer** | Thông tin khách hàng |
-| **Driver** | Thông tin tài xế |
-| **Vehicle** | Thông tin phương tiện của tài xế |
-| **OperationsStaff** | Nhân viên vận hành |
-| **Role** | Vai trò/nhóm quyền (dùng cho phân quyền OperationsStaff) |
-| **Trip** | Chuyến đi |
-| **TripStatusHistory** | Lịch sử thay đổi trạng thái của một chuyến đi |
-| **DriverLocation** | Vị trí tài xế theo thời gian (real-time tracking) |
-| **Payment** | Giao dịch thanh toán của một chuyến đi |
-| **PaymentMethod** | Phương thức thanh toán (tiền mặt/điện tử) khách hàng đã lưu/sử dụng |
-| **Notification** | Thông báo gửi cho khách hàng/tài xế |
-| **Rating** | Đánh giá của khách hàng dành cho tài xế sau chuyến |
-| **AuditLog** | Nhật ký ghi vết các thao tác quan trọng (đặc biệt của nhân viên vận hành) |
+| Customer | Khách hàng sử dụng dịch vụ |
+| Driver | Tài xế cung cấp dịch vụ |
+| Vehicle | Phương tiện của tài xế |
+| VehicleType | Loại xe/dịch vụ (ví dụ: tiêu chuẩn, cao cấp) |
+| Trip | Chuyến đi, thực thể trung tâm của hệ thống |
+| TripStatusHistory | Lịch sử thay đổi trạng thái của một chuyến |
+| DriverLocation | Lịch sử/hiện trạng vị trí của tài xế |
+| Payment | Thông tin thanh toán của một chuyến |
+| Transaction | Giao dịch cụ thể gắn với một lần thanh toán (có thể có nhiều lần thử) |
+| Notification | Thông báo gửi tới khách hàng hoặc tài xế |
+| Rating | Đánh giá của khách hàng dành cho tài xế sau chuyến |
+| Operator | Nhân viên vận hành |
+| Role | Vai trò/quyền hạn của nhân viên vận hành |
+| AuditLog | Nhật ký ghi vết các thao tác quan trọng |
 
-##### 9.2 Thuộc tính chính của từng thực thể
-
-**Account**
-- account_id (PK)
-- phone_or_email
-- password_hash
-- account_type (customer / driver / operations_staff)
-- created_at
-- status (active / locked)
-
-**Customer**
-- customer_id (PK)
-- account_id (FK)
-- full_name
-- default_pickup_address *(tuỳ chọn)*
-- created_at
-
-**Driver**
-- driver_id (PK)
-- account_id (FK)
-- full_name
-- status (available / unavailable / on_trip)
-- average_rating
-- created_at
-
-**Vehicle**
-- vehicle_id (PK)
-- driver_id (FK)
-- vehicle_type (xe máy / 4 chỗ / 7 chỗ...)
-- license_plate
-- brand_model
-- status (active / inactive)
-
-**OperationsStaff**
-- staff_id (PK)
-- account_id (FK)
-- full_name
-- role_id (FK)
-
-**Role**
-- role_id (PK)
-- role_name
-- permissions (danh sách quyền — có thể tách bảng Permission riêng nếu cần chi tiết hơn)
-
-**Trip**
-- trip_id (PK)
-- customer_id (FK)
-- driver_id (FK, nullable — chưa có tài xế nhận)
-- vehicle_type_requested
-- pickup_location (lat/long, address)
-- dropoff_location (lat/long, address)
-- current_status (searching / assigned / arrived / picked_up / in_progress / completed / cancelled)
-- requested_at
-- completed_at
-- distance
-- duration
-- fare_amount
-
-**TripStatusHistory**
-- history_id (PK)
-- trip_id (FK)
-- status
-- changed_at
-- changed_by (driver_id / system)
-
-**DriverLocation**
-- location_id (PK)
-- driver_id (FK)
-- latitude
-- longitude
-- recorded_at
-
-**Payment**
-- payment_id (PK)
-- trip_id (FK, 1-1)
-- amount
-- payment_method_type (cash / electronic)
-- status (pending / success / failed)
-- transaction_ref (mã tham chiếu từ nhà cung cấp thanh toán bên ngoài — KHÔNG lưu thông tin thẻ)
-- paid_at
-
-**PaymentMethod**
-- payment_method_id (PK)
-- customer_id (FK)
-- method_type (cash / e-wallet / card_token...)
-- provider_token (token từ nhà cung cấp thanh toán, không lưu số thẻ thật)
-- created_at
-
-**Notification**
-- notification_id (PK)
-- recipient_type (customer / driver)
-- recipient_id
-- trip_id (FK, nullable)
-- event_type (request_received / driver_assigned / driver_arrived / trip_completed / payment_result / new_trip_offer / trip_update)
-- content
-- sent_at
-- status (sent / failed)
-
-**Rating**
-- rating_id (PK)
-- trip_id (FK, 1-1)
-- customer_id (FK)
-- driver_id (FK)
-- stars (1–5)
-- comment
-- created_at
-
-**AuditLog**
-- log_id (PK)
-- staff_id (FK, nullable)
-- action_type
-- target_entity
-- target_id
-- action_detail
-- created_at
-
-##### 9.3 Mối quan hệ giữa các thực thể (Relationships)
-
-| Quan hệ | Loại |
-|---|---|
-| Account – Customer | 1 – 1 |
-| Account – Driver | 1 – 1 |
-| Account – OperationsStaff | 1 – 1 |
-| Role – OperationsStaff | 1 – nhiều |
-| Driver – Vehicle | 1 – nhiều (tài xế có thể có nhiều phương tiện, nhưng thường 1 phương tiện đang hoạt động) |
-| Customer – Trip | 1 – nhiều |
-| Driver – Trip | 1 – nhiều |
-| Trip – TripStatusHistory | 1 – nhiều |
-| Driver – DriverLocation | 1 – nhiều |
-| Trip – Payment | 1 – 1 |
-| Customer – PaymentMethod | 1 – nhiều |
-| Trip – Rating | 1 – 1 |
-| Customer – Rating | 1 – nhiều |
-| Driver – Rating | 1 – nhiều |
-| Trip – Notification | 1 – nhiều |
-| OperationsStaff – AuditLog | 1 – nhiều |
-
-##### 9.4 Sơ đồ ERD (Mermaid)
+### 2. Sơ đồ ERD (Entity Relationship Diagram)
 
 ```mermaid
 erDiagram
-    ACCOUNT ||--|| CUSTOMER : has
-    ACCOUNT ||--|| DRIVER : has
-    ACCOUNT ||--|| OPERATIONS_STAFF : has
-    ROLE ||--o{ OPERATIONS_STAFF : assigned_to
-
-    DRIVER ||--o{ VEHICLE : owns
-    DRIVER ||--o{ DRIVER_LOCATION : reports
-
     CUSTOMER ||--o{ TRIP : creates
     DRIVER ||--o{ TRIP : fulfills
-    TRIP ||--o{ TRIP_STATUS_HISTORY : has
-
-    TRIP ||--|| PAYMENT : generates
-    CUSTOMER ||--o{ PAYMENT_METHOD : owns
-
-    TRIP ||--|| RATING : receives
+    DRIVER ||--o{ VEHICLE : owns
+    VEHICLETYPE ||--o{ VEHICLE : classifies
+    VEHICLETYPE ||--o{ TRIP : selected_for
+    TRIP ||--o{ TRIPSTATUSHISTORY : has
+    TRIP ||--|| PAYMENT : has
+    PAYMENT ||--o{ TRANSACTION : includes
+    TRIP ||--o| RATING : receives
     CUSTOMER ||--o{ RATING : gives
-    DRIVER ||--o{ RATING : receives_many
-
+    DRIVER ||--o{ DRIVERLOCATION : reports
     TRIP ||--o{ NOTIFICATION : triggers
-    OPERATIONS_STAFF ||--o{ AUDIT_LOG : performs
-
-    ACCOUNT {
-        string account_id PK
-        string phone_or_email
-        string password_hash
-        string account_type
-        datetime created_at
-        string status
-    }
+    CUSTOMER ||--o{ NOTIFICATION : receives
+    DRIVER ||--o{ NOTIFICATION : receives
+    OPERATOR ||--o{ AUDITLOG : performs
+    ROLE ||--o{ OPERATOR : assigned_to
+    OPERATOR ||--o{ TRIP : manages
 
     CUSTOMER {
         string customer_id PK
-        string account_id FK
         string full_name
-        string default_pickup_address
+        string phone_number
+        string email
+        datetime created_at
     }
 
     DRIVER {
         string driver_id PK
-        string account_id FK
         string full_name
+        string phone_number
         string status
-        float average_rating
+        float rating_avg
+        datetime created_at
     }
 
     VEHICLE {
         string vehicle_id PK
         string driver_id FK
-        string vehicle_type
+        string vehicle_type_id FK
         string license_plate
-        string brand_model
-        string status
+        string model
     }
 
-    OPERATIONS_STAFF {
-        string staff_id PK
-        string account_id FK
-        string full_name
-        string role_id FK
-    }
-
-    ROLE {
-        string role_id PK
-        string role_name
+    VEHICLETYPE {
+        string vehicle_type_id PK
+        string type_name
+        string description
     }
 
     TRIP {
         string trip_id PK
         string customer_id FK
         string driver_id FK
-        string vehicle_type_requested
+        string vehicle_type_id FK
         string pickup_location
         string dropoff_location
-        string current_status
+        string status
         datetime requested_at
         datetime completed_at
-        float distance
-        int duration
-        float fare_amount
     }
 
-    TRIP_STATUS_HISTORY {
+    TRIPSTATUSHISTORY {
         string history_id PK
         string trip_id FK
         string status
         datetime changed_at
-        string changed_by
     }
 
-    DRIVER_LOCATION {
+    DRIVERLOCATION {
         string location_id PK
         string driver_id FK
         float latitude
@@ -877,59 +599,65 @@ erDiagram
         string payment_id PK
         string trip_id FK
         float amount
-        string payment_method_type
+        string method
         string status
-        string transaction_ref
-        datetime paid_at
     }
 
-    PAYMENT_METHOD {
-        string payment_method_id PK
-        string customer_id FK
-        string method_type
-        string provider_token
+    TRANSACTION {
+        string transaction_id PK
+        string payment_id FK
+        string provider_reference
+        string result
+        datetime processed_at
     }
 
     NOTIFICATION {
         string notification_id PK
+        string trip_id FK
         string recipient_type
         string recipient_id
-        string trip_id FK
-        string event_type
-        string content
+        string message
+        string channel
         datetime sent_at
-        string status
     }
 
     RATING {
         string rating_id PK
         string trip_id FK
         string customer_id FK
-        string driver_id FK
-        int stars
+        int score
         string comment
-        datetime created_at
     }
 
-    AUDIT_LOG {
+    OPERATOR {
+        string operator_id PK
+        string role_id FK
+        string full_name
+        string username
+    }
+
+    ROLE {
+        string role_id PK
+        string role_name
+        string permissions
+    }
+
+    AUDITLOG {
         string log_id PK
-        string staff_id FK
-        string action_type
+        string operator_id FK
+        string action
         string target_entity
-        string target_id
-        string action_detail
-        datetime created_at
+        datetime performed_at
     }
 ```
 
-##### 9.5 Ghi chú thiết kế
+### 3. Ghi chú thiết kế dữ liệu
 
-- **Account** được tách riêng làm bảng xác thực chung (dùng chung logic đăng nhập/mật khẩu cho cả 3 loại người dùng), đúng với yêu cầu bảo mật BR17 (xác thực trước khi truy cập chức năng cần tài khoản).
-- **PaymentMethod.provider_token** chỉ lưu token tham chiếu từ nhà cung cấp thanh toán bên ngoài, tuân thủ đúng BR10 (không lưu thông tin thẻ nhạy cảm trực tiếp).
-- **DriverLocation** thiết kế dạng bảng ghi nhận liên tục (time-series) để phục vụ FR32 (theo dõi vị trí thời gian thực) — trong triển khai thực tế có thể cân nhắc dùng cơ sở dữ liệu chuyên biệt (vd: Redis, time-series DB) thay vì RDBMS thông thường để tối ưu hiệu năng, nhưng ở mức data model logic vẫn thể hiện như một entity.
-- **Trip.current_status** kết hợp với **TripStatusHistory** giúp vừa truy vấn nhanh trạng thái hiện tại, vừa lưu vết đầy đủ lịch sử thay đổi trạng thái (phục vụ audit và xử lý exception).
-- Quan hệ **Trip – Payment** và **Trip – Rating** là 1–1 vì mỗi chuyến chỉ có một giao dịch thanh toán chính thức và một đánh giá duy nhất (theo BR11, BR14).
-- Thời gian lưu trữ dữ liệu (data retention) của các bảng như DriverLocation, AuditLog, TripStatusHistory hiện **chưa được khách hàng chốt** — cần bổ sung vào danh sách Open Issues.
+- Thông tin nhạy cảm của thanh toán (số thẻ, mã CVV, tài khoản ngân hàng) **không** được lưu trong `PAYMENT` hoặc `TRANSACTION`; chỉ lưu tham chiếu (`provider_reference`) trả về từ nhà cung cấp thanh toán bên ngoài, đúng theo BRule06
+- `TRIPSTATUSHISTORY` phục vụ việc theo dõi chuyến đi theo thời gian thực và truy vết khi xử lý sự cố (FR27-FR29)
+- `DRIVERLOCATION` có thể thiết kế dưới dạng bảng lưu vết lịch sử hoặc bảng chỉ lưu vị trí hiện tại tùy theo yêu cầu phi chức năng về hiệu năng - cần làm rõ thêm ở giai đoạn thiết kế kỹ thuật
+- `ROLE` và `OPERATOR` phục vụ yêu cầu phân quyền (BR21, BRule07); `AUDITLOG` phục vụ yêu cầu lưu vết (BR24, BRule08)
+- Các trường liên quan tới chính sách còn *TBD* (ví dụ thời hạn phản hồi tài xế, công thức tính cước) chưa được đưa thành cấu hình cụ thể trong mô hình, sẽ được bổ sung sau khi xác nhận với khách hàng
 - 
 
 #### Bước 10: Xác định Non-Functional Requirements (NFR)
