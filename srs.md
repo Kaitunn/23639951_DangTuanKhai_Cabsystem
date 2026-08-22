@@ -660,217 +660,459 @@ erDiagram
 - Các trường liên quan tới chính sách còn *TBD* (ví dụ thời hạn phản hồi tài xế, công thức tính cước) chưa được đưa thành cấu hình cụ thể trong mô hình, sẽ được bổ sung sau khi xác nhận với khách hàng
 - 
 
-#### Bước 10: Xác định Non-Functional Requirements (NFR)
+# GIAI ĐOẠN 2 (tiếp theo): B10 - NON-FUNCTIONAL REQUIREMENTS (NFR)
 
-Sau khi có Data Model, BA xác định các **Yêu cầu phi chức năng (NFR)** — mô tả hệ thống phải vận hành **như thế nào** (hiệu năng, khả năng mở rộng, bảo mật, độ tin cậy...) chứ không phải làm được **những gì**. Với ràng buộc **7 tuần cho MVB**, BA cần phân loại rõ NFR nào là **bắt buộc ngay ở MVB** và NFR nào **chưa cần đầu tư ở giai đoạn này**, để đội phát triển không tốn thời gian tối ưu hóa những phần chưa cần thiết.
+## Nguyên tắc áp dụng cho MVB (7 tuần)
 
-##### 10.1 Nguyên tắc áp dụng cho giai đoạn MVB
+Ở giai đoạn MVB, hệ thống ưu tiên đúng chức năng nghiệp vụ cốt lõi và kiến trúc "đủ tốt để mở rộng sau", không đặt mục tiêu tối ưu hiệu năng cực đoan hay triển khai kiến trúc phức tạp (ví dụ microservices đầy đủ) ngay từ đầu. Các NFR dưới đây được viết ở mức "chấp nhận được cho MVB" và ghi chú rõ phần nào để dành cho giai đoạn mở rộng sau.
 
-- Ưu tiên đúng luồng nghiệp vụ, dữ liệu chính xác, hệ thống chạy ổn định ở tải thấp/trung bình hơn là tối ưu hiệu năng cực hạn.
-- Kiến trúc nên module hóa theo logic (tách rõ ràng theo domain: Trip, Payment, Notification...) để dễ tách thành microservice sau này, nhưng không bắt buộc triển khai microservices thật sự ở MVB — có thể là modular monolith để giảm độ phức tạp vận hành trong 7 tuần, miễn là ranh giới module rõ ràng.
-- Các yêu cầu về độ trễ cực thấp, khả năng chịu tải cực lớn, đa vùng địa lý (multi-region) chưa cần thiết ở MVB, để dành cho giai đoạn mở rộng sau khi hệ thống đã chứng minh được mô hình vận hành.
+## Danh sách Non-Functional Requirements
 
-##### 10.2 Bảng Non-Functional Requirements
-
-| Mã | Danh mục | Yêu cầu | Áp dụng ở MVB |
+| Mã | Nhóm | Yêu cầu | Ghi chú áp dụng cho MVB |
 |---|---|---|---|
-| NFR01 | Hiệu năng (Performance) | Thời gian phản hồi cho các thao tác thông thường (đăng nhập, đặt chuyến, xem lịch sử) ở mức chấp nhận được cho người dùng (vài giây), không cần tối ưu xuống dưới 1 giây ở giai đoạn MVB | Bắt buộc mức tối thiểu, không cần tối ưu sâu |
-| NFR02 | Hiệu năng | Tần suất cập nhật vị trí tài xế (DriverLocation) ở mức đủ dùng để theo dõi chuyến (vd: vài giây/lần), chưa cần tối ưu real-time độ trễ cực thấp | Chưa cần tối ưu sâu |
-| NFR03 | Khả năng mở rộng (Scalability) | Kiến trúc module hóa theo domain (Trip, Payment, Notification, Admin...), ranh giới rõ ràng để có thể tách thành microservice trong tương lai | Bắt buộc thiết kế (có thể triển khai dạng modular monolith) |
-| NFR04 | Khả năng mở rộng | Triển khai đầy đủ kiến trúc microservices, container orchestration (Kubernetes), auto-scaling theo tải | Không bắt buộc ở MVB |
-| NFR05 | Độ tin cậy (Reliability) | Lỗi ở module Thanh toán hoặc Thông báo không được làm sập luồng đặt xe/thực hiện chuyến (cô lập lỗi ở mức logic, có thể chỉ cần try-catch/timeout hợp lý, chưa cần circuit breaker phức tạp) | Bắt buộc mức cơ bản |
-| NFR06 | Độ tin cậy | Tỷ lệ uptime hệ thống ở mức chấp nhận được cho môi trường MVB/pilot (không cần SLA 99.9%+ như hệ thống production quy mô lớn) | Bắt buộc mức cơ bản |
-| NFR07 | Bảo mật (Security) | Mật khẩu được mã hóa (hash) khi lưu trữ, dữ liệu truyền tải qua HTTPS | Bắt buộc |
-| NFR08 | Bảo mật | Phân quyền rõ ràng giữa các vai trò (customer/driver/operations staff), không cho truy cập chéo dữ liệu | Bắt buộc |
-| NFR09 | Bảo mật | Không lưu trữ trực tiếp thông tin thẻ/tài khoản thanh toán nhạy cảm (dùng token từ nhà cung cấp thanh toán ngoài) | Bắt buộc |
-| NFR10 | Bảo mật | Cơ chế bảo mật nâng cao (mã hóa đầu-cuối, penetration testing định kỳ, chuẩn PCI-DSS đầy đủ) | Chưa cần ở MVB, để giai đoạn sau |
-| NFR11 | Khả năng bảo trì (Maintainability) | Code tổ chức theo module rõ ràng, có tài liệu API cơ bản để đội phát triển sau này dễ tiếp tục mở rộng | Bắt buộc mức cơ bản |
-| NFR12 | Khả năng triển khai (Deployability) | Có thể triển khai (deploy) các thay đổi nhỏ mà không cần rebuild/redeploy toàn bộ hệ thống cùng lúc | Nên có, mức cơ bản, chưa cần CI/CD phức tạp |
-| NFR13 | Khả năng sử dụng (Usability) | Giao diện khách hàng và tài xế đơn giản, dễ thao tác trên thiết bị di động | Bắt buộc |
-| NFR14 | Khả năng sử dụng | Hỗ trợ đa ngôn ngữ, đa nền tảng (iOS + Android native đầy đủ) | Không cần ở MVB (đúng theo Out-of-Scope ở Bước 4) |
-| NFR15 | Khả năng tương thích (Compatibility) | Tích hợp được với 1 nhà cung cấp thanh toán bên ngoài qua API chuẩn (REST/webhook) | Bắt buộc |
-| NFR16 | Khả năng tương thích | Hỗ trợ tích hợp nhiều nhà cung cấp thanh toán/thông báo cùng lúc | Không cần ở MVB |
-| NFR17 | Khả năng theo dõi (Observability) | Ghi log cơ bản cho các lỗi hệ thống và audit trail cho thao tác quan trọng (theo BR16) | Bắt buộc mức cơ bản |
-| NFR18 | Khả năng theo dõi | Hệ thống giám sát (monitoring/alerting) chuyên sâu, dashboard vận hành thời gian thực nâng cao | Chưa cần ở MVB |
-| NFR19 | Khả năng phục hồi (Recoverability) | Có cơ chế backup dữ liệu định kỳ cơ bản | Nên có, mức cơ bản |
-| NFR20 | Khả năng phục hồi | Disaster recovery đa vùng (multi-region failover) | Không cần ở MVB |
+| NFR01 | Hiệu năng (Performance) | Thời gian phản hồi cho các thao tác thông thường (đăng nhập, đặt chuyến, xem trạng thái) ở mức chấp nhận được cho người dùng, không yêu cầu ngưỡng dưới 1 giây | Không tối ưu real-time ở mức mili-giây trong MVB; ưu tiên đúng và ổn định trước, tối ưu tốc độ sau |
+| NFR02 | Khả năng mở rộng (Scalability) | Kiến trúc phải cho phép các thành phần (đặt chuyến, thanh toán, thông báo) có thể tách và scale độc lập trong tương lai | MVB có thể triển khai dạng monolith module hóa rõ ràng (modular monolith), chưa cần tách microservices ngay; ranh giới module phải rõ để dễ tách sau |
+| NFR03 | Độ tin cậy / Khả năng chịu lỗi (Reliability / Fault Isolation) | Lỗi ở chức năng thanh toán hoặc thông báo không được làm gián đoạn chức năng đặt xe và thực hiện chuyến | Áp dụng cơ chế cô lập lỗi cơ bản (ví dụ: gọi bất đồng bộ, retry, timeout) ngay từ MVB dù chưa cần hạ tầng phức tạp (message queue đầy đủ) |
+| NFR04 | Khả năng dùng lại/mở rộng chức năng (Extensibility) | Có thể bổ sung loại dịch vụ mới, phương thức thanh toán mới, kênh thông báo mới mà không viết lại toàn bộ hệ thống | Thiết kế theo hướng interface/abstraction cho các điểm tích hợp (thanh toán, thông báo) ngay từ MVB |
+| NFR05 | Triển khai từng phần (Deployability) | Có thể triển khai tính năng mới từng phần, hạn chế ảnh hưởng tới chức năng đang hoạt động | MVB áp dụng versioning API cơ bản và tách rõ module, chưa cần CI/CD phức tạp đa dịch vụ |
+| NFR06 | Bảo mật (Security) | Xác thực người dùng trước khi truy cập chức năng có tài khoản; kiểm soát quyền truy cập cho thao tác quản trị | Áp dụng cơ chế xác thực chuẩn (ví dụ token-based) và phân quyền theo vai trò (role-based) ngay từ MVB |
+| NFR07 | Bảo vệ dữ liệu (Data Protection) | Dữ liệu cá nhân, phương tiện, vị trí, giao dịch phải được bảo vệ; không lưu trực tiếp thông tin thanh toán nhạy cảm | Mã hóa dữ liệu nhạy cảm ở tầng lưu trữ và truyền tải (HTTPS); không lưu số thẻ/CVV trong hệ thống CAB |
+| NFR08 | Khả năng theo dõi/kiểm tra (Auditability) | Ghi log các thao tác quản trị và giao dịch quan trọng để phục vụ kiểm tra khi có sự cố | Log tối thiểu gồm: người thực hiện, hành động, đối tượng, thời gian |
+| NFR09 | Khả năng sẵn sàng (Availability) | Hệ thống cần hoạt động ổn định vào thời điểm nhu cầu tăng cao | MVB không cam kết SLA uptime cụ thể (%), nhưng thiết kế tránh single point of failure ở mức cơ bản nhất có thể trong 7 tuần |
+| NFR10 | Khả năng sử dụng (Usability) | Giao diện khách hàng và tài xế đơn giản, dễ thao tác trên thiết bị di động | Ưu tiên luồng thao tác tối thiểu (ít bước) cho đặt xe và nhận chuyến |
+| NFR11 | Khả năng tương thích tích hợp (Interoperability) | Hệ thống phải tích hợp được với nhà cung cấp thanh toán bên ngoài qua API chuẩn | MVB tích hợp với một nhà cung cấp duy nhất, thiết kế interface để dễ thêm nhà cung cấp khác sau |
+| NFR12 | Khả năng bảo trì (Maintainability) | Code và cấu trúc dữ liệu phải được tổ chức rõ ràng theo module nghiệp vụ để dễ bảo trì trong thời gian ngắn 7 tuần | Ưu tiên cấu trúc module hóa rõ ràng hơn là tối ưu kiến trúc phân tán phức tạp |
 
-##### 10.3 Diễn giải nguyên tắc phân loại
+> Các ngưỡng số liệu cụ thể (% uptime, thời gian phản hồi tối đa, số lượng người dùng đồng thời) hiện chưa được khách hàng chốt, cần làm rõ thêm ở giai đoạn xác nhận yêu cầu phi chức năng chi tiết.
 
-- **Bắt buộc ở MVB:** Những NFR ảnh hưởng trực tiếp đến tính đúng đắn, an toàn dữ liệu và trải nghiệm cơ bản của người dùng — không thể bỏ qua dù thời gian gấp.
-- **Chưa cần ở MVB:** Những NFR liên quan đến tối ưu hiệu năng cực hạn, hạ tầng phức tạp (microservices đầy đủ, đa vùng, auto-scaling nâng cao) — phù hợp đầu tư khi hệ thống đã có người dùng thực tế và cần mở rộng quy mô, tránh over-engineering trong giai đoạn 7 tuần.
-- Các NFR thuộc nhóm "chưa cần" vẫn nên được cân nhắc ở mức thiết kế (vd: module hóa rõ ràng theo domain — NFR03) để không tạo ra nợ kỹ thuật (technical debt) lớn, dù chưa cần triển khai đầy đủ ngay.
+---
 
-##### 10.4 Bảng liên kết NFR với Business Goals
+# B11 - USE CASE: SƠ ĐỒ VÀ ĐẶC TẢ
 
-| NFR | Business Goal liên quan |
-|---|---|
-| NFR01, NFR02 | BG03 (theo dõi thời gian thực) |
-| NFR03, NFR04, NFR12 | BG06, BG08 (mở rộng, kiến trúc linh hoạt) |
-| NFR05, NFR06 | BG06 (ổn định, cô lập lỗi) |
-| NFR07–NFR10 | BG07 (bảo mật) |
-| NFR11 | BG08 (kiến trúc linh hoạt, dễ bảo trì) |
-| NFR13, NFR14 | Trải nghiệm người dùng chung (không gắn trực tiếp 1 BG cụ thể) |
-| NFR15, NFR16 | BG02 (thanh toán), BG04 (thông báo), BG08 |
-| NFR17, NFR18 | BG05 (báo cáo vận hành), BG07 (audit) |
-| NFR19, NFR20 | BG06 (ổn định hệ thống) |
-
-
-#### Bước 11: Vẽ Use Case Diagram (Sơ đồ Use Case)
-
-Từ các Functional Requirements (FR) đã phân rã, BA nhóm các chức năng liên quan thành các **Use Case (UC)**, gắn với từng Actor (tác nhân) tương ứng. Mỗi UC được đánh mã theo actor để dễ tra cứu và truy vết.
-
-##### 11.1 Danh sách Actor
+## 1. Danh sách tác nhân (Actors)
 
 | Actor | Mô tả |
 |---|---|
 | Customer | Khách hàng sử dụng dịch vụ đặt xe |
 | Driver | Tài xế thực hiện chuyến đi |
-| Operations Staff | Nhân viên vận hành, quản trị hệ thống |
-| Payment Gateway | Hệ thống bên ngoài, đóng vai trò actor phụ (external system) xử lý thanh toán điện tử |
-| System (Scheduler) | Tác nhân hệ thống nội bộ, tự động thực hiện các use case nền (matching, tính cước...) |
+| Operator | Nhân viên vận hành quản trị hệ thống |
+| System (Matching Engine) | Actor hệ thống nội bộ, đại diện cho tiến trình tìm/phân công tài xế và tính cước tự động |
+| Payment Gateway | Actor bên ngoài, nhà cung cấp thanh toán điện tử |
 
-##### 11.2 Danh sách Use Case theo Actor
+## 2. Danh sách Use Case
 
-**Customer**
+| Mã | Tên Use Case | Actor chính |
+|---|---|---|
+| UC01 | Đăng ký tài khoản khách hàng | Customer |
+| UC02 | Đăng nhập | Customer / Driver / Operator |
+| UC03 | Cập nhật hồ sơ cá nhân | Customer |
+| UC04 | Đặt chuyến xe | Customer |
+| UC05 | Theo dõi trạng thái chuyến đi | Customer |
+| UC06 | Xem lịch sử chuyến đi | Customer |
+| UC07 | Thanh toán chuyến đi | Customer |
+| UC08 | Đánh giá tài xế | Customer |
+| UC09 | Đăng ký / tạo tài khoản tài xế | Driver / Operator |
+| UC10 | Cập nhật hồ sơ và phương tiện | Driver |
+| UC11 | Chuyển trạng thái sẵn sàng | Driver |
+| UC12 | Nhận và phản hồi thông báo chuyến | Driver |
+| UC13 | Cập nhật trạng thái chuyến đi | Driver |
+| UC14 | Cập nhật vị trí tài xế | Driver |
+| UC15 | Tìm và phân công tài xế | System |
+| UC16 | Tính cước chuyến đi | System |
+| UC17 | Gửi thông báo | System |
+| UC18 | Quản lý khách hàng | Operator |
+| UC19 | Quản lý tài xế | Operator |
+| UC20 | Quản lý phương tiện | Operator |
+| UC21 | Giám sát chuyến đang diễn ra | Operator |
+| UC22 | Xử lý chuyến bị lỗi | Operator |
+| UC23 | Tra cứu lịch sử giao dịch | Operator |
+| UC24 | Xem báo cáo vận hành | Operator |
+| UC25 | Phân quyền nhân viên | Operator |
+| UC26 | Xử lý giao dịch thanh toán điện tử | Payment Gateway |
 
-| Mã | Tên Use Case |
-|---|---|
-| UC01 | Đăng ký tài khoản |
-| UC02 | Đăng nhập |
-| UC03 | Cập nhật thông tin cá nhân |
-| UC04 | Đặt chuyến xe |
-| UC05 | Theo dõi chuyến đi |
-| UC06 | Xem lịch sử chuyến đi |
-| UC07 | Thanh toán chuyến đi |
-| UC08 | Đánh giá tài xế |
-| UC09 | Nhận thông báo |
-
-**Driver**
-
-| Mã | Tên Use Case |
-|---|---|
-| UC10 | Đăng ký / được tạo tài khoản |
-| UC11 | Đăng nhập |
-| UC12 | Cập nhật hồ sơ & phương tiện |
-| UC13 | Cập nhật trạng thái sẵn sàng |
-| UC14 | Nhận & phản hồi yêu cầu chuyến |
-| UC15 | Cập nhật trạng thái chuyến đi |
-| UC16 | Xác nhận thanh toán tiền mặt |
-| UC17 | Nhận thông báo |
-
-**Operations Staff**
-
-| Mã | Tên Use Case |
-|---|---|
-| UC18 | Đăng nhập quản trị |
-| UC19 | Quản lý khách hàng |
-| UC20 | Quản lý tài xế & phương tiện |
-| UC21 | Giám sát chuyến đi đang diễn ra |
-| UC22 | Xử lý sự cố chuyến đi |
-| UC23 | Tra cứu lịch sử giao dịch |
-| UC24 | Xem báo cáo vận hành |
-| UC25 | Phân quyền / quản lý vai trò |
-
-**System (Use Case nền - được các UC trên gọi tới)**
-
-| Mã | Tên Use Case |
-|---|---|
-| UC26 | Tự động tìm tài xế |
-| UC27 | Tính cước chuyến đi |
-| UC28 | Gửi thông báo |
-| UC29 | Ghi Audit Log |
-| UC30 | Xử lý giao dịch thanh toán điện tử (với Payment Gateway) |
-
-##### 11.3 Sơ đồ Use Case — Customer
-
-```mermaid
-flowchart LR
-    Customer((Customer))
-
-    Customer --- UC01([UC01: Đăng ký tài khoản])
-    Customer --- UC02([UC02: Đăng nhập])
-    Customer --- UC03([UC03: Cập nhật thông tin cá nhân])
-    Customer --- UC04([UC04: Đặt chuyến xe])
-    Customer --- UC05([UC05: Theo dõi chuyến đi])
-    Customer --- UC06([UC06: Xem lịch sử chuyến đi])
-    Customer --- UC07([UC07: Thanh toán chuyến đi])
-    Customer --- UC08([UC08: Đánh giá tài xế])
-    Customer --- UC09([UC09: Nhận thông báo])
-
-    UC04 -.include.-> UC26([UC26: Tự động tìm tài xế])
-    UC07 -.include.-> UC27([UC27: Tính cước chuyến đi])
-    UC07 -.include.-> UC30([UC30: Xử lý thanh toán điện tử])
-    UC08 -.extend.-> UC07
-```
-
-##### 11.4 Sơ đồ Use Case — Driver
-
-```mermaid
-flowchart LR
-    Driver((Driver))
-
-    Driver --- UC10([UC10: Đăng ký / được tạo tài khoản])
-    Driver --- UC11([UC11: Đăng nhập])
-    Driver --- UC12([UC12: Cập nhật hồ sơ và phương tiện])
-    Driver --- UC13([UC13: Cập nhật trạng thái sẵn sàng])
-    Driver --- UC14([UC14: Nhận và phản hồi yêu cầu chuyến])
-    Driver --- UC15([UC15: Cập nhật trạng thái chuyến đi])
-    Driver --- UC16([UC16: Xác nhận thanh toán tiền mặt])
-    Driver --- UC17([UC17: Nhận thông báo])
-
-    UC14 -.include.-> UC28([UC28: Gửi thông báo])
-    UC15 -.include.-> UC28
-```
-
-##### 11.5 Sơ đồ Use Case — Operations Staff
-
-```mermaid
-flowchart LR
-    Staff((Operations Staff))
-
-    Staff --- UC18([UC18: Đăng nhập quản trị])
-    Staff --- UC19([UC19: Quản lý khách hàng])
-    Staff --- UC20([UC20: Quản lý tài xế và phương tiện])
-    Staff --- UC21([UC21: Giám sát chuyến đi đang diễn ra])
-    Staff --- UC22([UC22: Xử lý sự cố chuyến đi])
-    Staff --- UC23([UC23: Tra cứu lịch sử giao dịch])
-    Staff --- UC24([UC24: Xem báo cáo vận hành])
-    Staff --- UC25([UC25: Phân quyền / quản lý vai trò])
-
-    UC22 -.include.-> UC29([UC29: Ghi Audit Log])
-    UC25 -.include.-> UC29
-```
-
-##### 11.6 Sơ đồ Use Case tổng thể (bao gồm quan hệ giữa các Actor và các Use Case nền)
+## 3. Sơ đồ Use Case tổng thể
 
 ```mermaid
 flowchart LR
     Customer((Customer))
     Driver((Driver))
-    Staff((Operations Staff))
-    Gateway((Payment Gateway))
+    Operator((Operator))
+    SystemActor((System))
+    PaymentGW((Payment Gateway))
 
-    Customer --- UC04([UC04: Đặt chuyến xe])
-    Driver --- UC14([UC14: Nhận và phản hồi yêu cầu chuyến])
-    UC04 -.include.-> UC26([UC26: Tự động tìm tài xế])
-    UC26 -.trigger.-> UC14
+    subgraph CustomerUC["Use case cua Customer"]
+        UC01([UC01: Dang ky tai khoan])
+        UC02([UC02: Dang nhap])
+        UC03([UC03: Cap nhat ho so])
+        UC04([UC04: Dat chuyen xe])
+        UC05([UC05: Theo doi trang thai chuyen])
+        UC06([UC06: Xem lich su chuyen di])
+        UC07([UC07: Thanh toan chuyen di])
+        UC08([UC08: Danh gia tai xe])
+    end
 
-    Customer --- UC07([UC07: Thanh toán chuyến đi])
-    UC07 -.include.-> UC27([UC27: Tính cước chuyến đi])
-    UC07 -.include.-> UC30([UC30: Xử lý thanh toán điện tử])
-    UC30 --- Gateway
+    subgraph DriverUC["Use case cua Driver"]
+        UC09([UC09: Dang ky tai khoan tai xe])
+        UC10([UC10: Cap nhat ho so va phuong tien])
+        UC11([UC11: Chuyen trang thai san sang])
+        UC12([UC12: Nhan va phan hoi thong bao chuyen])
+        UC13([UC13: Cap nhat trang thai chuyen di])
+        UC14([UC14: Cap nhat vi tri])
+    end
 
-    Driver --- UC15([UC15: Cập nhật trạng thái chuyến đi])
-    UC15 -.include.-> UC28([UC28: Gửi thông báo])
-    UC28 -.notify.-> Customer
-    UC28 -.notify.-> Driver
+    subgraph SystemUC["Use case cua System"]
+        UC15([UC15: Tim va phan cong tai xe])
+        UC16([UC16: Tinh cuoc chuyen di])
+        UC17([UC17: Gui thong bao])
+    end
 
-    Staff --- UC22([UC22: Xử lý sự cố chuyến đi])
-    UC22 -.include.-> UC29([UC29: Ghi Audit Log])
+    subgraph OperatorUC["Use case cua Operator"]
+        UC18([UC18: Quan ly khach hang])
+        UC19([UC19: Quan ly tai xe])
+        UC20([UC20: Quan ly phuong tien])
+        UC21([UC21: Giam sat chuyen dang dien ra])
+        UC22([UC22: Xu ly chuyen bi loi])
+        UC23([UC23: Tra cuu lich su giao dich])
+        UC24([UC24: Xem bao cao van hanh])
+        UC25([UC25: Phan quyen nhan vien])
+    end
+
+    UC26([UC26: Xu ly giao dich thanh toan dien tu])
+
+    Customer --> UC01
+    Customer --> UC02
+    Customer --> UC03
+    Customer --> UC04
+    Customer --> UC05
+    Customer --> UC06
+    Customer --> UC07
+    Customer --> UC08
+
+    Driver --> UC02
+    Driver --> UC09
+    Driver --> UC10
+    Driver --> UC11
+    Driver --> UC12
+    Driver --> UC13
+    Driver --> UC14
+
+    Operator --> UC02
+    Operator --> UC09
+    Operator --> UC18
+    Operator --> UC19
+    Operator --> UC20
+    Operator --> UC21
+    Operator --> UC22
+    Operator --> UC23
+    Operator --> UC24
+    Operator --> UC25
+
+    SystemActor --> UC15
+    SystemActor --> UC16
+    SystemActor --> UC17
+
+    PaymentGW --> UC26
+
+    UC04 -.include.-> UC15
+    UC13 -.include.-> UC16
+    UC07 -.include.-> UC26
+    UC15 -.include.-> UC17
+    UC12 -.include.-> UC17
+    UC07 -.include.-> UC17
+    UC13 -.include.-> UC17
 ```
 
----
+## 4. Đặc tả Use Case (Use Case Specification)
+
+### UC01 - Đăng ký tài khoản khách hàng
+
+| Thành phần | Nội dung |
+|---|---|
+| Actor chính | Customer |
+| Mô tả | Khách hàng tạo tài khoản mới để sử dụng dịch vụ |
+| Tiền điều kiện | Khách hàng chưa có tài khoản trong hệ thống |
+| Luồng chính | 1. Khách hàng chọn đăng ký<br>2. Nhập thông tin cá nhân (họ tên, số điện thoại, mật khẩu)<br>3. Hệ thống xác thực dữ liệu hợp lệ<br>4. Hệ thống tạo tài khoản và thông báo thành công |
+| Luồng ngoại lệ | Số điện thoại đã tồn tại: hệ thống báo lỗi và yêu cầu nhập lại |
+| Hậu điều kiện | Tài khoản khách hàng được tạo, khách hàng có thể đăng nhập |
+
+### UC02 - Đăng nhập
+
+| Thành phần | Nội dung |
+|---|---|
+| Actor chính | Customer / Driver / Operator |
+| Mô tả | Người dùng xác thực để truy cập hệ thống |
+| Tiền điều kiện | Người dùng đã có tài khoản |
+| Luồng chính | 1. Người dùng nhập thông tin đăng nhập<br>2. Hệ thống xác thực<br>3. Hệ thống cấp quyền truy cập tương ứng vai trò |
+| Luồng ngoại lệ | Sai thông tin đăng nhập: hệ thống báo lỗi, không cấp quyền truy cập |
+| Hậu điều kiện | Người dùng được xác thực và truy cập chức năng theo vai trò (UC33 - liên quan NFR06) |
+
+### UC03 - Cập nhật hồ sơ cá nhân
+
+| Thành phần | Nội dung |
+|---|---|
+| Actor chính | Customer |
+| Mô tả | Khách hàng chỉnh sửa thông tin cá nhân |
+| Tiền điều kiện | Khách hàng đã đăng nhập (UC02) |
+| Luồng chính | 1. Khách hàng mở màn hình hồ sơ<br>2. Chỉnh sửa thông tin<br>3. Hệ thống lưu thay đổi |
+| Luồng ngoại lệ | Dữ liệu không hợp lệ: hệ thống báo lỗi và giữ nguyên dữ liệu cũ |
+| Hậu điều kiện | Thông tin hồ sơ được cập nhật |
+
+### UC04 - Đặt chuyến xe
+
+| Thành phần | Nội dung |
+|---|---|
+| Actor chính | Customer |
+| Use case liên quan | Include UC15 (Tìm và phân công tài xế) |
+| Mô tả | Khách hàng tạo yêu cầu đặt xe |
+| Tiền điều kiện | Khách hàng đã đăng nhập |
+| Luồng chính | 1. Khách hàng nhập điểm đón<br>2. Nhập điểm đến<br>3. Chọn loại xe (và tiêu chí tài xế rating cao nếu có)<br>4. Gửi yêu cầu<br>5. Hệ thống thực hiện UC15 để tìm tài xế |
+| Luồng ngoại lệ | Không tìm được tài xế (liên hệ EX03): hệ thống thông báo khách hàng |
+| Hậu điều kiện | Chuyến đi được tạo ở trạng thái đang tìm/đã phân công tài xế |
+
+### UC05 - Theo dõi trạng thái chuyến đi
+
+| Thành phần | Nội dung |
+|---|---|
+| Actor chính | Customer |
+| Mô tả | Khách hàng xem trạng thái hiện tại của chuyến đang thực hiện |
+| Tiền điều kiện | Chuyến đi đã được tạo (UC04) |
+| Luồng chính | 1. Khách hàng mở màn hình theo dõi chuyến<br>2. Hệ thống hiển thị trạng thái hiện tại và vị trí tài xế (nếu có) |
+| Luồng ngoại lệ | Mất kết nối dữ liệu vị trí: hệ thống hiển thị trạng thái gần nhất đã ghi nhận |
+| Hậu điều kiện | Khách hàng nắm được trạng thái chuyến hiện tại |
+
+### UC06 - Xem lịch sử chuyến đi
+
+| Thành phần | Nội dung |
+|---|---|
+| Actor chính | Customer |
+| Mô tả | Khách hàng tra cứu các chuyến đã thực hiện |
+| Tiền điều kiện | Khách hàng đã đăng nhập, có ít nhất một chuyến đã hoàn thành |
+| Luồng chính | 1. Khách hàng mở màn hình lịch sử<br>2. Hệ thống hiển thị danh sách chuyến kèm số tiền đã thanh toán |
+| Luồng ngoại lệ | Không có chuyến nào: hệ thống hiển thị danh sách rỗng |
+| Hậu điều kiện | Khách hàng xem được lịch sử chuyến đi |
+
+### UC07 - Thanh toán chuyến đi
+
+| Thành phần | Nội dung |
+|---|---|
+| Actor chính | Customer |
+| Use case liên quan | Include UC26 (Xử lý giao dịch thanh toán điện tử - nếu chọn hình thức điện tử); Include UC17 (Gửi thông báo kết quả) |
+| Mô tả | Khách hàng thanh toán chi phí sau khi hoàn thành chuyến |
+| Tiền điều kiện | Chuyến đi đã hoàn thành và đã được tính cước (UC16) |
+| Luồng chính | 1. Hệ thống hiển thị số tiền cần thanh toán<br>2. Khách hàng chọn phương thức (tiền mặt/điện tử)<br>3. Nếu điện tử: hệ thống gọi UC26<br>4. Hệ thống ghi nhận kết quả thanh toán |
+| Luồng ngoại lệ | Giao dịch điện tử thất bại (EX05): hệ thống thông báo và cho phép thử lại |
+| Hậu điều kiện | Giao dịch thanh toán được ghi nhận, chuyến chuyển sang trạng thái hoàn tất |
+
+### UC08 - Đánh giá tài xế
+
+| Thành phần | Nội dung |
+|---|---|
+| Actor chính | Customer |
+| Mô tả | Khách hàng đánh giá tài xế sau khi hoàn thành chuyến |
+| Tiền điều kiện | Chuyến đi đã hoàn thành và đã thanh toán |
+| Luồng chính | 1. Hệ thống hiển thị màn hình đánh giá<br>2. Khách hàng chọn điểm đánh giá và nhận xét (tùy chọn)<br>3. Hệ thống lưu đánh giá và cập nhật rating trung bình của tài xế |
+| Luồng ngoại lệ | Khách hàng bỏ qua đánh giá: hệ thống không bắt buộc, chuyến vẫn được xem là hoàn tất |
+| Hậu điều kiện | Đánh giá được lưu, rating tài xế được cập nhật |
+
+### UC09 - Đăng ký / tạo tài khoản tài xế
+
+| Thành phần | Nội dung |
+|---|---|
+| Actor chính | Driver, Operator |
+| Mô tả | Tài xế tự đăng ký hoặc được nhân viên vận hành tạo tài khoản |
+| Tiền điều kiện | Tài xế chưa có tài khoản |
+| Luồng chính | 1. Tài xế (hoặc Operator) nhập thông tin cá nhân và phương tiện<br>2. Hệ thống xác thực dữ liệu<br>3. Hệ thống tạo tài khoản tài xế |
+| Luồng ngoại lệ | Thông tin phương tiện không hợp lệ: hệ thống báo lỗi | 
+| Hậu điều kiện | Tài khoản tài xế được tạo |
+
+### UC10 - Cập nhật hồ sơ và phương tiện
+
+| Thành phần | Nội dung |
+|---|---|
+| Actor chính | Driver |
+| Mô tả | Tài xế cập nhật thông tin cá nhân và phương tiện |
+| Tiền điều kiện | Tài xế đã đăng nhập |
+| Luồng chính | 1. Tài xế mở màn hình hồ sơ<br>2. Chỉnh sửa thông tin cá nhân/phương tiện<br>3. Hệ thống lưu thay đổi |
+| Luồng ngoại lệ | Dữ liệu không hợp lệ: hệ thống báo lỗi | 
+| Hậu điều kiện | Hồ sơ và phương tiện được cập nhật |
+
+### UC11 - Chuyển trạng thái sẵn sàng
+
+| Thành phần | Nội dung |
+|---|---|
+| Actor chính | Driver |
+| Mô tả | Tài xế bật/tắt trạng thái sẵn sàng nhận chuyến |
+| Tiền điều kiện | Tài xế đã đăng nhập |
+| Luồng chính | 1. Tài xế bấm chuyển trạng thái<br>2. Hệ thống cập nhật trạng thái hoạt động của tài xế |
+| Luồng ngoại lệ | Tài xế đang trong một chuyến: hệ thống không cho phép chuyển sang trạng thái không sẵn sàng cho đến khi hoàn thành chuyến (business rule) |
+| Hậu điều kiện | Trạng thái tài xế được cập nhật, ảnh hưởng tới việc được đề xuất trong UC15 |
+
+### UC12 - Nhận và phản hồi thông báo chuyến
+
+| Thành phần | Nội dung |
+|---|---|
+| Actor chính | Driver |
+| Use case liên quan | Include UC17 (nhận thông báo) |
+| Mô tả | Tài xế nhận đề xuất chuyến mới và chấp nhận/từ chối |
+| Tiền điều kiện | Tài xế ở trạng thái sẵn sàng và được hệ thống đề xuất (UC15) |
+| Luồng chính | 1. Hệ thống gửi thông báo chuyến<br>2. Tài xế xem thông tin chuyến<br>3. Tài xế chọn chấp nhận<br>4. Hệ thống xác nhận phân công |
+| Luồng ngoại lệ | Tài xế từ chối hoặc không phản hồi trong thời hạn (EX01, EX02): hệ thống chuyển đề xuất sang tài xế khác (UC15) |
+| Hậu điều kiện | Chuyến được xác nhận phân công cho tài xế, hoặc chuyển tiếp cho tài xế khác |
+
+### UC13 - Cập nhật trạng thái chuyến đi
+
+| Thành phần | Nội dung |
+|---|---|
+| Actor chính | Driver |
+| Use case liên quan | Include UC16 (khi hoàn thành chuyến, hệ thống tính cước); Include UC17 (thông báo thay đổi trạng thái) |
+| Mô tả | Tài xế cập nhật các mốc trạng thái trong quá trình thực hiện chuyến |
+| Tiền điều kiện | Tài xế đã nhận chuyến (UC12) |
+| Luồng chính | 1. Tài xế cập nhật "đã đến điểm đón"<br>2. Cập nhật "đã đón khách"<br>3. Cập nhật "đang di chuyển"<br>4. Cập nhật "hoàn thành chuyến"<br>5. Hệ thống thực hiện UC16 tính cước |
+| Luồng ngoại lệ | Mất kết nối mạng giữa chừng (EX06): trạng thái tạm dừng cập nhật, Operator có thể can thiệp qua UC22 |
+| Hậu điều kiện | Trạng thái chuyến được cập nhật đầy đủ đến khi hoàn thành |
+
+### UC14 - Cập nhật vị trí tài xế
+
+| Thành phần | Nội dung |
+|---|---|
+| Actor chính | Driver |
+| Mô tả | Hệ thống ghi nhận vị trí hiện tại của tài xế khi đang hoạt động |
+| Tiền điều kiện | Tài xế đã đăng nhập và bật ứng dụng |
+| Luồng chính | 1. Ứng dụng tài xế gửi tọa độ định kỳ<br>2. Hệ thống lưu vị trí mới nhất |
+| Luồng ngoại lệ | Mất tín hiệu GPS/mạng: hệ thống giữ vị trí gần nhất đã ghi nhận | 
+| Hậu điều kiện | Vị trí tài xế được cập nhật, phục vụ UC15 và UC05 |
+
+### UC15 - Tìm và phân công tài xế
+
+| Thành phần | Nội dung |
+|---|---|
+| Actor chính | System |
+| Mô tả | Hệ thống tự động xác định và đề xuất tài xế phù hợp cho một yêu cầu đặt xe |
+| Tiền điều kiện | Yêu cầu đặt xe đã được tạo (UC04) |
+| Luồng chính | 1. Xác định vị trí khách hàng (FR08)<br>2. Lọc tài xế online trong bán kính (FR09)<br>3. Lọc theo loại xe (FR10)<br>4. Lọc theo rating nếu có yêu cầu (FR11)<br>5. Sắp xếp và đề xuất tài xế đầu danh sách (FR12)<br>6. Gửi đề xuất qua UC12 |
+| Luồng ngoại lệ | Không còn tài xế phù hợp trong danh sách (EX03): hệ thống dừng tìm kiếm và thông báo khách hàng |
+| Hậu điều kiện | Chuyến được phân công cho một tài xế, hoặc khách hàng được thông báo không tìm được tài xế |
+
+### UC16 - Tính cước chuyến đi
+
+| Thành phần | Nội dung |
+|---|---|
+| Actor chính | System |
+| Mô tả | Hệ thống tự động tính số tiền khách hàng phải trả sau khi chuyến hoàn thành |
+| Tiền điều kiện | Chuyến đi đã ở trạng thái hoàn thành (UC13) |
+| Luồng chính | 1. Hệ thống lấy thông tin loại dịch vụ và hành trình<br>2. Áp dụng công thức tính cước<br>3. Ghi nhận số tiền vào chuyến |
+| Luồng ngoại lệ | Thiếu dữ liệu hành trình: hệ thống đánh dấu cần Operator xử lý thủ công (UC22) |
+| Hậu điều kiện | Số tiền cước được xác định, sẵn sàng cho UC07 |
+
+### UC17 - Gửi thông báo
+
+| Thành phần | Nội dung |
+|---|---|
+| Actor chính | System |
+| Mô tả | Hệ thống gửi thông báo tới khách hàng hoặc tài xế khi có sự kiện liên quan |
+| Tiền điều kiện | Một sự kiện nghiệp vụ xảy ra (tạo yêu cầu, phân công, đến điểm đón, hoàn thành, kết quả thanh toán, chuyến mới) |
+| Luồng chính | 1. Hệ thống xác định loại sự kiện và đối tượng nhận<br>2. Soạn nội dung thông báo<br>3. Gửi qua kênh hiện có |
+| Luồng ngoại lệ | Gửi thông báo thất bại: hệ thống ghi log lỗi, không chặn luồng nghiệp vụ chính (theo NFR03) |
+| Hậu điều kiện | Thông báo được gửi tới đối tượng liên quan |
+
+### UC18 - Quản lý khách hàng
+
+| Thành phần | Nội dung |
+|---|---|
+| Actor chính | Operator |
+| Mô tả | Nhân viên vận hành xem và quản lý thông tin khách hàng |
+| Tiền điều kiện | Operator đã đăng nhập và có quyền phù hợp |
+| Luồng chính | 1. Operator tìm kiếm/xem danh sách khách hàng<br>2. Xem chi tiết hoặc chỉnh sửa thông tin khi cần |
+| Luồng ngoại lệ | Operator không đủ quyền chỉnh sửa (EX09): hệ thống từ chối thao tác |
+| Hậu điều kiện | Thông tin khách hàng được quản lý/cập nhật, thao tác được ghi log |
+
+### UC19 - Quản lý tài xế
+
+| Thành phần | Nội dung |
+|---|---|
+| Actor chính | Operator |
+| Mô tả | Nhân viên vận hành xem và quản lý thông tin tài xế |
+| Tiền điều kiện | Operator đã đăng nhập và có quyền phù hợp |
+| Luồng chính | 1. Operator tìm kiếm/xem danh sách tài xế<br>2. Xem chi tiết, kiểm tra trạng thái, chỉnh sửa khi cần |
+| Luồng ngoại lệ | Operator không đủ quyền (EX09): hệ thống từ chối thao tác |
+| Hậu điều kiện | Thông tin tài xế được quản lý, thao tác được ghi log |
+
+### UC20 - Quản lý phương tiện
+
+| Thành phần | Nội dung |
+|---|---|
+| Actor chính | Operator |
+| Mô tả | Nhân viên vận hành quản lý thông tin phương tiện gắn với tài xế |
+| Tiền điều kiện | Operator đã đăng nhập và có quyền phù hợp |
+| Luồng chính | 1. Operator xem danh sách phương tiện<br>2. Cập nhật/xác minh thông tin phương tiện khi cần |
+| Luồng ngoại lệ | Thông tin phương tiện không hợp lệ: hệ thống báo lỗi | 
+| Hậu điều kiện | Thông tin phương tiện được cập nhật |
+
+### UC21 - Giám sát chuyến đang diễn ra
+
+| Thành phần | Nội dung |
+|---|---|
+| Actor chính | Operator |
+| Mô tả | Nhân viên vận hành theo dõi các chuyến đang thực hiện theo thời gian thực |
+| Tiền điều kiện | Operator đã đăng nhập |
+| Luồng chính | 1. Operator mở màn hình giám sát<br>2. Hệ thống hiển thị danh sách chuyến đang diễn ra và trạng thái |
+| Luồng ngoại lệ | Không có chuyến nào đang diễn ra: hệ thống hiển thị danh sách rỗng | 
+| Hậu điều kiện | Operator nắm được tình trạng vận hành hiện tại |
+
+### UC22 - Xử lý chuyến bị lỗi
+
+| Thành phần | Nội dung |
+|---|---|
+| Actor chính | Operator |
+| Mô tả | Nhân viên vận hành can thiệp thủ công khi chuyến gặp sự cố |
+| Tiền điều kiện | Một chuyến được đánh dấu hoặc phát hiện có lỗi (ví dụ EX06) |
+| Luồng chính | 1. Operator xác định chuyến bị lỗi<br>2. Kiểm tra thông tin liên quan<br>3. Thực hiện thao tác xử lý (ví dụ: hủy chuyến, gán lại tài xế) |
+| Luồng ngoại lệ | Thao tác thuộc nhóm nhạy cảm và Operator không đủ quyền (EX09): hệ thống từ chối | 
+| Hậu điều kiện | Chuyến được xử lý, thao tác được ghi log (UC34 - AuditLog) |
+
+### UC23 - Tra cứu lịch sử giao dịch
+
+| Thành phần | Nội dung |
+|---|---|
+| Actor chính | Operator |
+| Mô tả | Nhân viên vận hành tìm kiếm lịch sử chuyến và giao dịch thanh toán |
+| Tiền điều kiện | Operator đã đăng nhập và có quyền phù hợp |
+| Luồng chính | 1. Operator nhập điều kiện tìm kiếm<br>2. Hệ thống trả về danh sách giao dịch phù hợp |
+| Luồng ngoại lệ | Không tìm thấy kết quả: hệ thống hiển thị danh sách rỗng | 
+| Hậu điều kiện | Operator xem được thông tin giao dịch cần tra cứu |
+
+### UC24 - Xem báo cáo vận hành
+
+| Thành phần | Nội dung |
+|---|---|
+| Actor chính | Operator |
+| Mô tả | Xem các chỉ số vận hành: số chuyến, doanh thu, tỷ lệ hoàn thành/hủy, hiệu quả tài xế |
+| Tiền điều kiện | Operator đã đăng nhập và có quyền xem báo cáo |
+| Luồng chính | 1. Operator chọn khoảng thời gian/loại báo cáo<br>2. Hệ thống tổng hợp và hiển thị số liệu |
+| Luồng ngoại lệ | Không đủ dữ liệu trong khoảng thời gian chọn: hệ thống hiển thị báo cáo rỗng hoặc cảnh báo | 
+| Hậu điều kiện | Operator có dữ liệu để đánh giá hiệu quả vận hành |
+
+### UC25 - Phân quyền nhân viên
+
+| Thành phần | Nội dung |
+|---|---|
+| Actor chính | Operator (cấp quản trị cao hơn) |
+| Mô tả | Gán vai trò/quyền hạn cho các tài khoản nhân viên vận hành |
+| Tiền điều kiện | Operator thực hiện thao tác có quyền quản trị cấp cao | 
+| Luồng chính | 1. Operator chọn nhân viên<br>2. Gán vai trò/quyền phù hợp<br>3. Hệ thống lưu thay đổi |
+| Luồng ngoại lệ | Operator hiện tại không đủ quyền để phân quyền cho người khác (EX09): hệ thống từ chối | 
+| Hậu điều kiện | Quyền hạn của nhân viên được cập nhật, thao tác được ghi log |
+
+### UC26 - Xử lý giao dịch thanh toán điện tử
+
+| Thành phần | Nội dung |
+|---|---|
+| Actor chính | Payment Gateway (hệ thống bên ngoài) |
+| Mô tả | Xử lý yêu cầu thanh toán điện tử được gửi từ hệ thống CAB |
+| Tiền điều kiện | Khách hàng chọn thanh toán điện tử (UC07) |
+| Luồng chính | 1. Hệ thống CAB gửi yêu cầu thanh toán kèm số tiền<br>2. Payment Gateway xử lý giao dịch<br>3. Payment Gateway trả kết quả về hệ thống CAB |
+| Luồng ngoại lệ | Giao dịch thất bại (EX05): hệ thống CAB nhận kết quả thất bại và xử lý theo UC07 | 
+| Hậu điều kiện | Kết quả giao dịch được ghi nhận vào hệ thống CAB (không lưu thông tin thẻ/tài khoản nhạy cảm) |
 
 #### Bước 12: Đặc tả Use Case (Use Case Specification)
 
