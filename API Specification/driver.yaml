@@ -1,0 +1,86 @@
+/drivers/register:
+  post:
+    tags: [Driver]
+    summary: Đăng ký/tạo tài khoản tài xế (FR16, AC12)
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [fullName, phone, vehiclePlate, vehicleType]
+            properties:
+              fullName: { type: string }
+              phone: { type: string }
+              vehiclePlate: { type: string }
+              vehicleType: { type: string }
+    responses:
+      "201":
+        description: Tạo tài khoản tài xế thành công
+
+/drivers/{driverId}:
+  put:
+    tags: [Driver]
+    summary: Cập nhật hồ sơ và phương tiện tài xế (FR17, AC13)
+    parameters:
+      - name: driverId
+        in: path
+        required: true
+        schema: { type: string }
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              fullName: { type: string }
+              vehiclePlate: { type: string }
+    responses:
+      "200":
+        description: Cập nhật thành công
+
+/drivers/{driverId}/availability:
+  patch:
+    tags: [Driver]
+    summary: Bật/tắt trạng thái sẵn sàng nhận chuyến (FR18, AC14)
+    parameters:
+      - name: driverId
+        in: path
+        required: true
+        schema: { type: string }
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [available]
+            properties:
+              available: { type: boolean }
+    responses:
+      "200":
+        description: Trạng thái sẵn sàng được cập nhật
+
+/drivers/{driverId}/location:
+  patch:
+    tags: [Driver]
+    summary: Cập nhật vị trí tài xế theo chu kỳ (FR19, AC16)
+    parameters:
+      - name: driverId
+        in: path
+        required: true
+        schema: { type: string }
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [lat, lng]
+            properties:
+              lat: { type: number }
+              lng: { type: number }
+    responses:
+      "200":
+        description: Vị trí được cập nhật

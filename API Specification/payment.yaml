@@ -1,0 +1,23 @@
+/trips/{tripId}/payment:
+  post:
+    tags: [Payment]
+    summary: Ghi nhận thanh toán (tiền mặt/điện tử) (FR21-FR24, AC17-AC20)
+    parameters:
+      - name: tripId
+        in: path
+        required: true
+        schema: { type: string }
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [method]
+            properties:
+              method: { type: string, enum: [cash, e-payment] }
+    responses:
+      "200":
+        description: Giao dịch thành công
+      "402":
+        description: Thanh toán điện tử thất bại (AC20)

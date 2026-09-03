@@ -1,0 +1,123 @@
+/trips:
+  post:
+    tags: [Trip]
+    summary: Gửi yêu cầu đặt xe (FR04-FR07, AC04, AC05)
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [pickupLocation, dropoffLocation, vehicleType]
+            properties:
+              customerId: { type: string }
+              pickupLocation:
+                type: object
+                properties:
+                  lat: { type: number }
+                  lng: { type: number }
+              dropoffLocation:
+                type: object
+                properties:
+                  lat: { type: number }
+                  lng: { type: number }
+              vehicleType: { type: string, enum: [bike, car4, car7] }
+              preferHighRatingDriver: { type: boolean, default: false }
+    responses:
+      "201":
+        description: Yêu cầu đặt xe được ghi nhận, chuyển sang trạng thái tìm tài xế
+      "400":
+        description: Thiếu điểm đón/đến hoặc loại xe không hợp lệ
+
+  get:
+    tags: [Trip]
+    summary: Truy xuất lịch sử chuyến đi của khách hàng (FR36, AC32)
+    parameters:
+      - name: customerId
+        in: query
+        required: true
+        schema: { type: string }
+      - name: status
+        in: query
+        required: false
+        schema: { type: string }
+    responses:
+      "200":
+        description: Danh sách chuyến đi
+
+/trips/{tripId}:
+  get:
+    tags: [Trip]
+    summary: Lấy thông tin 1 chuyến đi / trạng thái hiện tại (FR35, AC31)
+    parameters:
+      - name: tripId
+        in: path
+        required: true
+        schema: { type: string }
+    responses:
+      "200":
+        description: Thông tin chi tiết chuyến đi
+      "404":
+        description: Không tìm thấy chuyến đi
+
+/trips/{tripId}/status:
+  patch:
+    tags: [Trip]
+    summary: Cập nhật trạng thái chuyến đi - tài xế cập nhật mốc (FR20, AC15)
+    parameters:
+      - name: tripId
+        in: path
+        required: true
+        schema: { type: string }
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [status]
+            properties:
+              status:
+                type: string
+                enum: [arrived_pickup, picked_up, in_progress, completed, cancelled]
+    responses:
+      "200":
+        description: Trạng thái được cập nhật
+
+/trips/{tripId}/assign-driver:
+  post:
+    tags: [Trip]
+    summary: Hệ thống đề xuất/phân công tài xế tự động (FR08-FR15, AC06-AC11)
+    parameters:
+      - name: tripId
+        in: path
+        required: true
+        schema: { type: string }
+    responses:
+      "200":
+        description: Tài xế được đề xuất
+      "404":
+        description: Không tìm được tài xế phù hợp (AC08)
+
+/trips/{tripId}/driver-response:
+  post:
+    tags: [Trip]
+    summary: Tài xế phản hồi chấp nhận/từ chối chuyến (FR13, AC09, AC10)
+    parameters:
+      - name: tripId
+        in: path
+        required: true
+        schema: { type: string }
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [driverId, response]
+            properties:
+              driverId: { type: string }
+              response: { type: string, enum: [accept, decline] }
+    responses:
+      "200":
+        description: Ghi nhận phản hồi tài xế
