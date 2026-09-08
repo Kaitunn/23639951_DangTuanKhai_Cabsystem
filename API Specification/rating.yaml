@@ -1,0 +1,31 @@
+openapi: 3.0.3
+info:
+  title: CAB System API - Rating
+  description: Đánh giá tài xế (FR37)
+  version: "1.0.0"
+servers:
+  - url: /api/v1
+
+paths:
+  /trips/{tripId}/rating:
+    post:
+      tags: [Rating]
+      summary: Khách hàng đánh giá tài xế sau chuyến (FR37, AC33)
+      parameters:
+        - name: tripId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [score]
+              properties:
+                score: { type: integer, minimum: 1, maximum: 5 }
+                comment: { type: string }
+      responses:
+        "200":
+          description: Đánh giá được ghi nhận, rating trung bình tài xế cập nhật

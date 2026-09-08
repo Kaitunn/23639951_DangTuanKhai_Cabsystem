@@ -1,0 +1,41 @@
+openapi: 3.0.3
+info:
+  title: CAB System API - Customer
+  description: Hồ sơ khách hàng (FR03)
+  version: "1.0.0"
+servers:
+  - url: /api/v1
+
+paths:
+  /customers/{customerId}:
+    get:
+      tags: [Customer]
+      summary: Xem thông tin hồ sơ khách hàng
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Thông tin khách hàng
+    put:
+      tags: [Customer]
+      summary: Cập nhật hồ sơ khách hàng (FR03, AC03)
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fullName: { type: string }
+                email: { type: string }
+      responses:
+        "200":
+          description: Cập nhật thành công
