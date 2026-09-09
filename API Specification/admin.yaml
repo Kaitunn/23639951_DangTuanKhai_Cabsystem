@@ -1,0 +1,153 @@
+openapi: 3.0.3
+info:
+  title: CAB System API - Admin
+  description: Quản trị vận hành (FR27-FR32)
+  version: "1.0.0"
+servers:
+  - url: /api/v1
+
+security:
+  - bearerAuth: []
+
+paths:
+  /admin/trips:
+    get:
+      tags: [Admin]
+      operationId: listActiveTrips
+      summary: Xem danh sách chuyến đang diễn ra (FR27, AC24)
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema: { type: string }
+        - name: page
+          in: query
+          required: false
+          schema: { type: integer, default: 1 }
+        - name: limit
+          in: query
+          required: false
+          schema: { type: integer, default: 20 }
+      responses:
+        "200":
+          description: Danh sách chuyến
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/TripSummary"
+                  total: { type: integer }
+        "401":
+          description: Chưa xác thực
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Không đủ quyền
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /admin/trips/{tripId}/resolve:
+    post:
+      tags: [Admin]
+      operationId: resolveTripIssue
+      summary: Operator xử lý chuyến bị lỗi (FR29, AC25, AC26)
+      parameters:
+        - name: tripId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Đã xử lý sự cố, ghi log thao tác
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tripId: { type: string }
+                  resolvedBy: { type: string }
+                  resolvedAt: { type: string, format: date-time }
+        "401":
+          description: Chưa xác thực
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Operator không đủ quyền (AC26)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Không tìm thấy chuyến đi
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /admin/reports:
+    get:
+      tags: [Admin]
+      operationId: getOperationalReports
+      summary: Xem báo cáo vận hành (FR32, AC28)
+      parameters:
+        - name: from
+          in: query
+          schema: { type: string, format: date }
+        - name: to
+          in: query
+          schema: { type: string, format: date }
+      responses:
+        "200":
+          description: Số liệu báo cáo (số chuyến, doanh thu, tỷ lệ hoàn thành/hủy)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalTrips: { type: integer }
+                  totalRevenue: { type: number, format: float }
+                  completionRate: { type: number, format: float }
+                  cancellationRate: { type: number, format: float }
+        "401":
+          description: Chưa xác thực
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Không đủ quyền
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    TripSummary:
+      type: object
+      properties:
+        tripId: { type: string }
+        customerId: { type: string }
+        driverId: { type: string }
+        status: { type: string }
+        createdAt: { type: string, format: date-time }
+    Error:
+      type: object
+      properties:
+        code: { type: string }
+        message: { type: string }

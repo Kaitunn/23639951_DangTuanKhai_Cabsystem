@@ -1,0 +1,76 @@
+openapi: 3.0.3
+info:
+  title: CAB System API - Rating
+  description: Đánh giá tài xế (FR37)
+  version: "1.0.0"
+servers:
+  - url: /api/v1
+
+security:
+  - bearerAuth: []
+
+paths:
+  /trips/{tripId}/rating:
+    post:
+      tags: [Rating]
+      operationId: rateDriverForTrip
+      summary: Khách hàng đánh giá tài xế sau chuyến (FR37, AC33)
+      parameters:
+        - name: tripId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [score]
+              properties:
+                score: { type: integer, minimum: 1, maximum: 5 }
+                comment: { type: string }
+      responses:
+        "200":
+          description: Đánh giá được ghi nhận, rating trung bình tài xế cập nhật
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tripId: { type: string }
+                  driverId: { type: string }
+                  score: { type: integer }
+                  comment: { type: string }
+                  driverAverageRating: { type: number, format: float }
+        "400":
+          description: Chuyến đi chưa hoàn tất, không thể đánh giá
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Chưa xác thực
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Không tìm thấy chuyến đi
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Error:
+      type: object
+      properties:
+        code: { type: string }
+        message: { type: string }

@@ -1,0 +1,84 @@
+openapi: 3.0.3
+info:
+  title: CAB System API - Payment
+  description: Tính cước, thanh toán (FR21-FR24)
+  version: "1.0.0"
+servers:
+  - url: /api/v1
+
+security:
+  - bearerAuth: []
+
+paths:
+  /trips/{tripId}/payment:
+    post:
+      tags: [Payment]
+      operationId: recordTripPayment
+      summary: Ghi nhận thanh toán (tiền mặt/điện tử) (FR21-FR24, AC17-AC20)
+      parameters:
+        - name: tripId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [method, amount]
+              properties:
+                method: { type: string, enum: [cash, e-payment] }
+                amount:
+                  type: number
+                  format: float
+                  minimum: 0
+                  description: Số tiền cước phí của chuyến đi (VND)
+                currency:
+                  type: string
+                  default: VND
+      responses:
+        "200":
+          description: Giao dịch thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  transactionId: { type: string }
+                  tripId: { type: string }
+                  method: { type: string, enum: [cash, e-payment] }
+                  amount: { type: number, format: float }
+                  currency: { type: string }
+                  status: { type: string, enum: [paid, failed] }
+        "401":
+          description: Chưa xác thực
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "402":
+          description: Thanh toán điện tử thất bại (AC20)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Không tìm thấy chuyến đi
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Error:
+      type: object
+      properties:
+        code: { type: string }
+        message: { type: string }

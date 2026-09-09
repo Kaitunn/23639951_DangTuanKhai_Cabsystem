@@ -1,0 +1,204 @@
+openapi: 3.0.3
+info:
+  title: CAB System API - Driver
+  description: Hồ sơ, trạng thái, vị trí tài xế (FR16-FR19)
+  version: "1.0.0"
+servers:
+  - url: /api/v1
+
+paths:
+  /drivers/register:
+    post:
+      tags: [Driver]
+      operationId: registerDriver
+      summary: Đăng ký/tạo tài khoản tài xế (FR16, AC12)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [fullName, phone, vehiclePlate, vehicleType]
+              properties:
+                fullName: { type: string }
+                phone: { type: string }
+                vehiclePlate: { type: string }
+                vehicleType: { type: string }
+      responses:
+        "201":
+          description: Tạo tài khoản tài xế thành công
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Driver"
+        "400":
+          description: Dữ liệu không hợp lệ
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: Số điện thoại hoặc biển số đã tồn tại
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /drivers/{driverId}:
+    put:
+      tags: [Driver]
+      operationId: updateDriverProfile
+      summary: Cập nhật hồ sơ và phương tiện tài xế (FR17, AC13)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: driverId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fullName: { type: string }
+                vehiclePlate: { type: string }
+      responses:
+        "200":
+          description: Cập nhật thành công
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Driver"
+        "400":
+          description: Dữ liệu không hợp lệ
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Chưa xác thực
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Không tìm thấy tài xế
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /drivers/{driverId}/availability:
+    patch:
+      tags: [Driver]
+      operationId: updateDriverAvailability
+      summary: Bật/tắt trạng thái sẵn sàng nhận chuyến (FR18, AC14)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: driverId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [available]
+              properties:
+                available: { type: boolean }
+      responses:
+        "200":
+          description: Trạng thái sẵn sàng được cập nhật
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  driverId: { type: string }
+                  available: { type: boolean }
+        "401":
+          description: Chưa xác thực
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Không tìm thấy tài xế
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /drivers/{driverId}/location:
+    patch:
+      tags: [Driver]
+      operationId: updateDriverLocation
+      summary: Cập nhật vị trí tài xế theo chu kỳ (FR19, AC16)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: driverId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [lat, lng]
+              properties:
+                lat: { type: number }
+                lng: { type: number }
+      responses:
+        "200":
+          description: Vị trí được cập nhật
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  driverId: { type: string }
+                  lat: { type: number }
+                  lng: { type: number }
+                  updatedAt: { type: string, format: date-time }
+        "401":
+          description: Chưa xác thực
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Không tìm thấy tài xế
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Driver:
+      type: object
+      properties:
+        driverId: { type: string }
+        fullName: { type: string }
+        phone: { type: string }
+        vehiclePlate: { type: string }
+        vehicleType: { type: string }
+    Error:
+      type: object
+      properties:
+        code: { type: string }
+        message: { type: string }

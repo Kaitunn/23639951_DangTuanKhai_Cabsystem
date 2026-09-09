@@ -1,0 +1,88 @@
+openapi: 3.0.3
+info:
+  title: CAB System API - Auth
+  description: Đăng ký / đăng nhập (FR01, FR02, FR16, FR33)
+  version: "1.0.0"
+servers:
+  - url: /api/v1
+
+paths:
+  /auth/register:
+    post:
+      tags: [Auth]
+      operationId: registerCustomer
+      summary: Đăng ký tài khoản khách hàng (FR01)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [fullName, phone, password]
+              properties:
+                fullName: { type: string, example: "Nguyen Van A" }
+                phone: { type: string, example: "0901234567" }
+                password: { type: string, format: password, minLength: 8 }
+      responses:
+        "201":
+          description: Tạo tài khoản thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  customerId: { type: string }
+                  fullName: { type: string }
+                  phone: { type: string }
+        "400":
+          description: Dữ liệu không hợp lệ (AC01)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: Số điện thoại đã được đăng ký
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      operationId: loginUser
+      summary: Đăng nhập (FR02, AC29)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [phone, password]
+              properties:
+                phone: { type: string }
+                password: { type: string, format: password }
+      responses:
+        "200":
+          description: Đăng nhập thành công, trả về access token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken: { type: string }
+                  role: { type: string, enum: [customer, driver, operator] }
+        "401":
+          description: Sai thông tin đăng nhập (AC02)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        code: { type: string }
+        message: { type: string }

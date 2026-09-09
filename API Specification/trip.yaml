@@ -1,0 +1,286 @@
+openapi: 3.0.3
+info:
+  title: CAB System API - Trip
+  description: Đặt xe, theo dõi, phân công tài xế, lịch sử chuyến (FR04-FR15, FR20, FR35, FR36)
+  version: "1.0.0"
+servers:
+  - url: /api/v1
+
+security:
+  - bearerAuth: []
+
+paths:
+  /trips:
+    post:
+      tags: [Trip]
+      operationId: createTripRequest
+      summary: Gửi yêu cầu đặt xe (FR04-FR07, AC04, AC05)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [pickupLocation, dropoffLocation, vehicleType]
+              properties:
+                pickupLocation:
+                  $ref: "#/components/schemas/GeoPoint"
+                dropoffLocation:
+                  $ref: "#/components/schemas/GeoPoint"
+                vehicleType: { type: string, enum: [bike, car4, car7] }
+                preferHighRatingDriver: { type: boolean, default: false }
+      responses:
+        "201":
+          description: Yêu cầu đặt xe được ghi nhận, chuyển sang trạng thái tìm tài xế
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Trip"
+        "400":
+          description: Thiếu điểm đón/đến hoặc loại xe không hợp lệ
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Chưa xác thực
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    get:
+      tags: [Trip]
+      operationId: listCustomerTripHistory
+      summary: Truy xuất lịch sử chuyến đi của khách hàng (FR36, AC32)
+      parameters:
+        - name: customerId
+          in: query
+          required: true
+          schema: { type: string }
+        - name: status
+          in: query
+          required: false
+          schema: { type: string }
+        - name: page
+          in: query
+          required: false
+          schema: { type: integer, default: 1 }
+        - name: limit
+          in: query
+          required: false
+          schema: { type: integer, default: 20 }
+      responses:
+        "200":
+          description: Danh sách chuyến đi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Trip"
+                  total: { type: integer }
+        "401":
+          description: Chưa xác thực
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /trips/{tripId}:
+    get:
+      tags: [Trip]
+      operationId: getTripDetails
+      summary: Lấy thông tin 1 chuyến đi / trạng thái hiện tại (FR35, AC31)
+      parameters:
+        - name: tripId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Thông tin chi tiết chuyến đi
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Trip"
+        "401":
+          description: Chưa xác thực
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Không tìm thấy chuyến đi
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /trips/{tripId}/status:
+    patch:
+      tags: [Trip]
+      operationId: updateTripStatus
+      summary: Cập nhật trạng thái chuyến đi - tài xế cập nhật mốc (FR20, AC15)
+      parameters:
+        - name: tripId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status:
+                  type: string
+                  enum: [arrived_pickup, picked_up, in_progress, completed, cancelled]
+      responses:
+        "200":
+          description: Trạng thái được cập nhật
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Trip"
+        "400":
+          description: Chuyển trạng thái không hợp lệ
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Chưa xác thực
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Không tìm thấy chuyến đi
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /trips/{tripId}/assign-driver:
+    post:
+      tags: [Trip]
+      operationId: assignDriverToTrip
+      summary: Hệ thống đề xuất/phân công tài xế tự động (FR08-FR15, AC06-AC11)
+      parameters:
+        - name: tripId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Tài xế được đề xuất
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tripId: { type: string }
+                  driverId: { type: string }
+                  status: { type: string }
+        "401":
+          description: Chưa xác thực
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Không tìm được tài xế phù hợp (AC08)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /trips/{tripId}/driver-response:
+    post:
+      tags: [Trip]
+      operationId: submitDriverResponse
+      summary: Tài xế phản hồi chấp nhận/từ chối chuyến (FR13, AC09, AC10)
+      parameters:
+        - name: tripId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [driverId, response]
+              properties:
+                driverId: { type: string }
+                response: { type: string, enum: [accept, decline] }
+      responses:
+        "200":
+          description: Ghi nhận phản hồi tài xế
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tripId: { type: string }
+                  driverId: { type: string }
+                  response: { type: string, enum: [accept, decline] }
+                  tripStatus: { type: string }
+        "401":
+          description: Chưa xác thực
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Không tìm thấy chuyến đi
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: Chuyến đi đã được gán cho tài xế khác hoặc đã hết hạn phản hồi
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    GeoPoint:
+      type: object
+      properties:
+        lat: { type: number }
+        lng: { type: number }
+    Trip:
+      type: object
+      properties:
+        tripId: { type: string }
+        customerId: { type: string }
+        driverId: { type: string }
+        pickupLocation:
+          $ref: "#/components/schemas/GeoPoint"
+        dropoffLocation:
+          $ref: "#/components/schemas/GeoPoint"
+        vehicleType: { type: string, enum: [bike, car4, car7] }
+        status:
+          type: string
+          enum: [searching, assigned, arrived_pickup, picked_up, in_progress, completed, cancelled]
+        createdAt: { type: string, format: date-time }
+    Error:
+      type: object
+      properties:
+        code: { type: string }
+        message: { type: string }
